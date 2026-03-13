@@ -27,7 +27,7 @@ const Hero = () => {
                     </p>
 
                     <div className="flex gap-4 justify-center md:justify-start mb-10">
-                        <a href="#contact" className="btn-primary">
+                        <a href="#contact" className="px-6 py-3 border border-slate-600 text-white rounded-lg hover:border-accent hover:text-accent transition-all">
                             Contact Me
                         </a>
                         <a href="#projects" className="px-6 py-3 border border-slate-600 text-white rounded-lg hover:border-accent hover:text-accent transition-all">

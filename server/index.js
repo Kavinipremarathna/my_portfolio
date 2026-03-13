@@ -1,7 +1,7 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const dotenv = require('dotenv');
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
@@ -13,22 +13,28 @@ app.use(cors());
 app.use(express.json());
 
 // Database Connection
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log('MongoDB Connected'))
-.catch(err => console.error('MongoDB Connection Error:', err));
+mongoose
+  .connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 5000 })
+  .then(() => console.log("MongoDB Connected"))
+  .catch((err) =>
+    console.error(
+      "MongoDB Connection Error. Falling back to local file storage:",
+      err.message,
+    ),
+  );
 
 // Routes (Placeholder)
-app.get('/', (req, res) => {
-    res.send('Portfolio API is running...');
+app.get("/", (req, res) => {
+  res.send("Portfolio API is running...");
 });
 
 // Import Routes
-const projectRoutes = require('./routes/projectRoutes');
-const authRoutes = require('./routes/authRoutes');
+const projectRoutes = require("./routes/projectRoutes");
+const authRoutes = require("./routes/authRoutes");
 
-app.use('/api/projects', projectRoutes);
-app.use('/api/auth', authRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

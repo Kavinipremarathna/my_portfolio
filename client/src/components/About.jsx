@@ -20,7 +20,7 @@ const About = () => {
                     <div className="flex flex-col md:flex-row gap-12 items-center">
                         <div className="flex-1 text-slate-300 text-lg leading-relaxed">
                             <p className="mb-6">
-                                I am currently pursuing a degree in Software Engineering. My journey began with a curiosity for how things work on the web, which has evolved into a passion for building robust, user-centric applications.
+                                I am currently pursuing a degree in Software Engineering at Sabaragamuwa University of Sri Lanka. My journey began with a curiosity for how things work on the web, which has evolved into a passion for building robust, user-centric applications.
                             </p>
                             <p className="mb-6">
                                 I have hands-on experience with modern web technologies including the MERN stack (MongoDB, Express, React, Node.js). I love solving complex problems and turning ideas into reality through clean code and efficient design.
@@ -31,7 +31,7 @@ const About = () => {
 
                             <div className="mt-8 grid grid-cols-2 gap-4">
                                 <div>
-                                    <h4 className="text-accent font-bold text-xl">0+</h4>
+                                    <h4 className="text-accent font-bold text-xl">3+</h4>
                                     <span className="text-sm text-slate-400">Years Experience</span>
                                 </div>
                                 <div>

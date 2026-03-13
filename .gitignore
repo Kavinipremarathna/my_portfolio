@@ -11,6 +11,9 @@ node_modules/
 .env.development
 .env.production
 
+# Local file-store data (dev fallback)
+server/data/*.json
+
 # =========================
 # Build outputs
 # =========================
