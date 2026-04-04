@@ -3,6 +3,25 @@ import path from "node:path";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 
+const fallbackProjects = [
+  {
+    _id: "a7e832cc-db3c-4eea-ae44-d2a427219597",
+    title: "Planova ",
+    description:
+      "Planova, a modern web-based event management platform created to transform the way people organize weddings, birthdays, and engagements. The system combines event creation, theme customization, budget tracking, vendor package browsing, and secure online payments into a seamless experience. With a responsive and user-friendly interface, Planova is designed to make event planning stress-free and efficient, while showcasing the power of full-stack web technologies in solving real-world challenges.",
+    tags: [
+      "React.js | Node.js | Express.js | MongoDB | Stripe API | Tailwind CSS | Figma | Postman | Git/GitHub",
+    ],
+    imageUrl:
+      "https://mir-s3-cdn-cf.behance.net/projects/404/ef4fb2200784279.66686f8b5be30.jpg",
+    liveLink:
+      "https://www.linkedin.com/posts/kavini-premarathna_webdevelopment-reactjs-nodejs-activity-7369738007467233280-Ht-K?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEUuUucBgAieWhM6s-XjrZwS_dXN60YHdAc",
+    repoLink: "",
+    featured: true,
+    createdAt: "2026-03-13T16:41:08.098Z",
+  },
+];
+
 const projectFileCandidates = [
   path.join(process.cwd(), "server", "data", "projects.json"),
   path.join(process.cwd(), "data", "projects.json"),
@@ -41,14 +60,18 @@ const readProjects = () => {
   try {
     const projectFile = resolveProjectFile();
     if (!fs.existsSync(projectFile)) {
-      return [];
+      return fallbackProjects;
     }
 
     const raw = fs.readFileSync(projectFile, "utf8");
     const parsed = JSON.parse(raw || "[]");
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      return fallbackProjects;
+    }
+
+    return parsed;
   } catch {
-    return [];
+    return fallbackProjects;
   }
 };
 

@@ -3,6 +3,63 @@ import path from "node:path";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 
+const fallbackSkills = [
+  {
+    _id: "skill-1",
+    name: "React",
+    category: "Frontend",
+    createdAt: "2026-04-04T00:00:00.000Z",
+  },
+  {
+    _id: "skill-2",
+    name: "Tailwind CSS",
+    category: "Frontend",
+    createdAt: "2026-04-04T00:00:01.000Z",
+  },
+  {
+    _id: "skill-3",
+    name: "UI Motion",
+    category: "Frontend",
+    createdAt: "2026-04-04T00:00:02.000Z",
+  },
+  {
+    _id: "skill-4",
+    name: "Node.js",
+    category: "Backend",
+    createdAt: "2026-04-04T00:00:03.000Z",
+  },
+  {
+    _id: "skill-5",
+    name: "Express.js",
+    category: "Backend",
+    createdAt: "2026-04-04T00:00:04.000Z",
+  },
+  {
+    _id: "skill-6",
+    name: "MongoDB",
+    category: "Backend",
+    createdAt: "2026-04-04T00:00:05.000Z",
+  },
+  {
+    _id: "skill-7",
+    name: "Git / GitHub",
+    category: "Tools",
+    createdAt: "2026-04-04T00:00:06.000Z",
+  },
+  {
+    _id: "skill-8",
+    name: "VS Code",
+    category: "Tools",
+    createdAt: "2026-04-04T00:00:07.000Z",
+  },
+  {
+    _id: "skill-9",
+    name: "Postman",
+    category: "Tools",
+    createdAt: "2026-04-04T00:00:08.000Z",
+  },
+];
+
 const skillsFileCandidates = [
   path.join(process.cwd(), "server", "data", "skills.json"),
   path.join(process.cwd(), "data", "skills.json"),
@@ -41,14 +98,18 @@ const readSkills = () => {
   try {
     const skillsFile = resolveSkillsFile();
     if (!fs.existsSync(skillsFile)) {
-      return [];
+      return fallbackSkills;
     }
 
     const raw = fs.readFileSync(skillsFile, "utf8");
     const parsed = JSON.parse(raw || "[]");
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      return fallbackSkills;
+    }
+
+    return parsed;
   } catch {
-    return [];
+    return fallbackSkills;
   }
 };
 
