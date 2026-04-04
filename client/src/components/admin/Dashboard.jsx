@@ -36,8 +36,12 @@ const Dashboard = ({ token, setToken }) => {
           axios.get(`${API_URL}/api/skills`),
         ]);
 
-        setProjects(projectsResponse.data);
-        setSkills(skillsResponse.data);
+        setProjects(
+          Array.isArray(projectsResponse.data) ? projectsResponse.data : [],
+        );
+        setSkills(
+          Array.isArray(skillsResponse.data) ? skillsResponse.data : [],
+        );
       } catch (err) {
         console.error(err);
       }
@@ -49,7 +53,7 @@ const Dashboard = ({ token, setToken }) => {
   const refreshProjects = async () => {
     try {
       const response = await axios.get(`${API_URL}/api/projects`);
-      setProjects(response.data);
+      setProjects(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error(err);
     }
@@ -58,7 +62,7 @@ const Dashboard = ({ token, setToken }) => {
   const refreshSkills = async () => {
     try {
       const response = await axios.get(`${API_URL}/api/skills`);
-      setSkills(response.data);
+      setSkills(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error(err);
     }

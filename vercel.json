@@ -8,10 +8,21 @@
     },
     "api/projects.js": {
       "includeFiles": "server/data/projects.json"
+    },
+    "api/skills.js": {
+      "includeFiles": "server/data/skills.json"
     }
   },
   "outputDirectory": "client/dist",
   "rewrites": [
+    {
+      "source": "/api/projects/(.*)",
+      "destination": "/api/projects?route=$1"
+    },
+    {
+      "source": "/api/skills/(.*)",
+      "destination": "/api/skills?route=$1"
+    },
     {
       "source": "/api/auth/(.*)",
       "destination": "/api/auth?route=$1"

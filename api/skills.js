@@ -3,19 +3,19 @@ import path from "node:path";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 
-const projectFileCandidates = [
-  path.join(process.cwd(), "server", "data", "projects.json"),
-  path.join(process.cwd(), "data", "projects.json"),
+const skillsFileCandidates = [
+  path.join(process.cwd(), "server", "data", "skills.json"),
+  path.join(process.cwd(), "data", "skills.json"),
 ];
 
-const resolveProjectFile = () => {
-  for (const candidate of projectFileCandidates) {
+const resolveSkillsFile = () => {
+  for (const candidate of skillsFileCandidates) {
     if (fs.existsSync(candidate)) {
       return candidate;
     }
   }
 
-  return projectFileCandidates[0];
+  return skillsFileCandidates[0];
 };
 
 const setCors = (res) => {
@@ -37,14 +37,14 @@ const normalizeRoute = (req) => {
   return String(route || "").trim();
 };
 
-const readProjects = () => {
+const readSkills = () => {
   try {
-    const projectFile = resolveProjectFile();
-    if (!fs.existsSync(projectFile)) {
+    const skillsFile = resolveSkillsFile();
+    if (!fs.existsSync(skillsFile)) {
       return [];
     }
 
-    const raw = fs.readFileSync(projectFile, "utf8");
+    const raw = fs.readFileSync(skillsFile, "utf8");
     const parsed = JSON.parse(raw || "[]");
     return Array.isArray(parsed) ? parsed : [];
   } catch {
@@ -52,9 +52,9 @@ const readProjects = () => {
   }
 };
 
-const writeProjects = (projects) => {
-  const projectFile = resolveProjectFile();
-  fs.writeFileSync(projectFile, JSON.stringify(projects, null, 2));
+const writeSkills = (skills) => {
+  const skillsFile = resolveSkillsFile();
+  fs.writeFileSync(skillsFile, JSON.stringify(skills, null, 2));
 };
 
 const requireAuth = (req, res) => {
@@ -87,95 +87,91 @@ export default function handler(req, res) {
   const id = route || req.query?.id || "";
 
   if (req.method === "GET" && !id) {
-    return res.status(200).json(readProjects());
+    return res.status(200).json(readSkills());
   }
 
   if (req.method === "GET" && id) {
-    const project = readProjects().find(
-      (item) => String(item._id) === String(id),
-    );
-    if (!project) {
-      return res.status(404).json({ msg: "Project not found" });
+    const skill = readSkills().find((item) => String(item._id) === String(id));
+    if (!skill) {
+      return res.status(404).json({ msg: "Skill not found" });
     }
 
-    return res.status(200).json(project);
+    return res.status(200).json(skill);
   }
 
   if (req.method === "POST") {
     if (!requireAuth(req, res)) return;
 
-    const { title, description, tags, imageUrl, liveLink, repoLink, featured } =
-      req.body || {};
-    const newProject = {
+    const { name, category } = req.body || {};
+    if (!name || !category) {
+      return res.status(400).json({ msg: "Please enter all fields" });
+    }
+
+    const newSkill = {
       _id: crypto.randomUUID(),
-      title,
-      description,
-      tags: Array.isArray(tags) ? tags : [],
-      imageUrl,
-      liveLink: liveLink || "",
-      repoLink: repoLink || "",
-      featured: Boolean(featured),
+      name: String(name).trim(),
+      category: String(category).trim(),
       createdAt: new Date().toISOString(),
     };
 
     try {
-      const projects = readProjects();
-      projects.unshift(newProject);
-      writeProjects(projects);
-      return res.status(200).json(newProject);
+      const skills = readSkills();
+      skills.push(newSkill);
+      writeSkills(skills);
+      return res.status(200).json(newSkill);
     } catch {
       return res
         .status(500)
-        .json({ msg: "Unable to save project in this deployment environment" });
+        .json({ msg: "Unable to save skill in this deployment environment" });
     }
   }
 
   if (req.method === "PUT") {
     if (!requireAuth(req, res)) return;
-    if (!id) return res.status(400).json({ msg: "Project id is required" });
+    if (!id) return res.status(400).json({ msg: "Skill id is required" });
 
     const updates = req.body || {};
-    const projects = readProjects();
-    const index = projects.findIndex((item) => String(item._id) === String(id));
+    const skills = readSkills();
+    const index = skills.findIndex((item) => String(item._id) === String(id));
     if (index === -1) {
-      return res.status(404).json({ msg: "Project not found" });
+      return res.status(404).json({ msg: "Skill not found" });
     }
 
     const updated = {
-      ...projects[index],
+      ...skills[index],
       ...updates,
-      _id: projects[index]._id,
-      createdAt: projects[index].createdAt,
+      _id: skills[index]._id,
+      createdAt: skills[index].createdAt,
     };
 
     try {
-      projects[index] = updated;
-      writeProjects(projects);
+      skills[index] = updated;
+      writeSkills(skills);
       return res.status(200).json(updated);
     } catch {
       return res
         .status(500)
-        .json({ msg: "Unable to save project in this deployment environment" });
+        .json({ msg: "Unable to save skill in this deployment environment" });
     }
   }
 
   if (req.method === "DELETE") {
     if (!requireAuth(req, res)) return;
-    if (!id) return res.status(400).json({ msg: "Project id is required" });
+    if (!id) return res.status(400).json({ msg: "Skill id is required" });
 
-    const projects = readProjects();
-    const filtered = projects.filter((item) => String(item._id) !== String(id));
-    if (filtered.length === projects.length) {
-      return res.status(404).json({ msg: "Project not found" });
+    const skills = readSkills();
+    const filtered = skills.filter((item) => String(item._id) !== String(id));
+    if (filtered.length === skills.length) {
+      return res.status(404).json({ msg: "Skill not found" });
     }
 
     try {
-      writeProjects(filtered);
-      return res.status(200).json({ msg: "Project removed" });
+      writeSkills(filtered);
+      return res.status(200).json({ msg: "Skill removed" });
     } catch {
       return res
         .status(500)
-        .json({ msg: "Unable to save project in this deployment environment" });
+        .json({ msg: "Unable to save skill in this deployment environment" });
     }
   }
 
