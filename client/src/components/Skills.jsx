@@ -1,102 +1,119 @@
-import React, { useState } from "react";
-import { Layers3, Sparkles, Wrench } from "lucide-react";
+import React from "react";
+import { motion as Motion } from "framer-motion";
+import {
+  FaReact,
+  FaNodeJs,
+  FaPython,
+  FaGitAlt,
+  FaFigma,
+  FaDocker,
+} from "react-icons/fa";
+import { SiTailwindcss, SiMongodb, SiPostman, SiExpress } from "react-icons/si";
+import { TbBrandVscode } from "react-icons/tb";
 
 const skillsData = [
   {
     category: "Frontend",
-    description: "Interfaces with motion, clarity, and responsive behavior.",
-    icon: Sparkles,
+    description: "Visual engineering for crisp, responsive user experiences.",
     items: [
-      "React.js",
-      "JavaScript (ES6+)",
-      "Tailwind CSS",
-      "HTML5/CSS3",
-      "Framer Motion",
-      "Redux",
+      { name: "React", level: 92, icon: FaReact },
+      { name: "Tailwind", level: 89, icon: SiTailwindcss },
+      { name: "UI Animation", level: 85, icon: FaFigma },
     ],
   },
   {
     category: "Backend",
     description:
-      "APIs, data flows, and authentication that hold up in production.",
-    icon: Layers3,
+      "Reliable APIs and secure architecture with scalable patterns.",
     items: [
-      "Node.js",
-      "Express.js",
-      "MongoDB",
-      "REST APIs",
-      "SQL",
-      "Authentication (JWT)",
+      { name: "Node.js", level: 88, icon: FaNodeJs },
+      { name: "Express", level: 86, icon: SiExpress },
+      { name: "MongoDB", level: 84, icon: SiMongodb },
+      { name: "Python", level: 79, icon: FaPython },
     ],
   },
   {
     category: "Tools & Others",
-    description:
-      "Shipping, debugging, and collaborating with the right tooling.",
-    icon: Wrench,
+    description: "Tooling and workflow that keep delivery smooth and fast.",
     items: [
-      "Git & GitHub",
-      "VS Code",
-      "Postman",
-      "Figma",
-      "Vercel/Netlify",
-      "Agile/Scrum",
+      { name: "Git / GitHub", level: 90, icon: FaGitAlt },
+      { name: "VS Code", level: 94, icon: TbBrandVscode },
+      { name: "Postman", level: 82, icon: SiPostman },
+      { name: "Docker", level: 72, icon: FaDocker },
     ],
   },
 ];
 
 const Skills = () => {
-  const [activeCard, setActiveCard] = useState(null);
-
   return (
     <section id="skills" className="py-24 bg-primary relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(56,189,248,0.08),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.06),transparent_28%)]" />
-      <div className="container mx-auto px-6">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.08),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.1),transparent_36%)]" />
+      <div className="container mx-auto px-6 relative">
         <div className="relative text-center mb-16 max-w-3xl mx-auto">
           <p className="text-xs uppercase tracking-[0.45em] text-accent font-semibold mb-4">
-            Capabilities
+            Expertise
           </p>
           <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
-            My Skills
+            Skills That Deliver
           </h2>
           <p className="text-slate-300 text-lg leading-8">
-            The stack I use to build responsive, maintainable products with a
-            clean visual finish.
+            A practical stack with strong fundamentals across frontend, backend,
+            and developer tooling.
           </p>
         </div>
 
-        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">
-          {skillsData.map((category, index) => (
-            <div
-              key={index}
-              onHoverStart={() => setActiveCard(index)}
-              onHoverEnd={() => setActiveCard(null)}
-              className="relative bg-secondary/80 p-8 rounded-[1.75rem] border border-white/10 hover:border-accent/40 transition-all hover:shadow-xl hover:shadow-accent/10 backdrop-blur-sm"
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {skillsData.map((group, groupIndex) => (
+            <Motion.article
+              key={group.category}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.45, delay: groupIndex * 0.1 }}
+              whileHover={{ y: -6 }}
+              className="group rounded-[1.75rem] border border-white/10 bg-secondary/65 p-7 backdrop-blur-lg shadow-xl shadow-black/20"
             >
-              <div
-                className="absolute top-0 left-0 h-1 bg-accent rounded-t-xl transition-all duration-300"
-                style={{ width: activeCard === index ? "100%" : "0%" }}
-              />
-              <div className="flex items-center justify-between gap-4 mb-5">
-                <h3 className="text-xl font-bold text-white">
-                  {category.category}
-                </h3>
-                <category.icon className="text-accent" size={20} />
-              </div>
-              <p className="text-sm text-slate-400 mb-6 leading-6">
-                {category.description}
+              <h3 className="text-2xl font-bold text-white">
+                {group.category}
+              </h3>
+              <p className="mt-2 text-sm text-slate-400 leading-7">
+                {group.description}
               </p>
-              <div className="flex flex-wrap gap-3 justify-center">
-                {category.items.map((item, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-slate-900/80 text-slate-200 px-3 py-1 rounded-full text-sm border border-white/10 transition-transform duration-200 hover:-translate-y-0.5 hover:scale-105"
-                  >
-                    {item}
-                  </span>
-                ))}
+
+              <div className="mt-7 space-y-5">
+                {group.items.map((skill) => {
+                  const Icon = skill.icon;
+                  return (
+                    <div
+                      key={skill.name}
+                      className="rounded-xl border border-white/10 bg-primary/50 p-4 transition-colors group-hover:border-accent/30"
+                    >
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <div className="inline-flex items-center gap-3">
+                          <Icon className="text-accent" size={20} />
+                          <span className="font-medium text-slate-200">
+                            {skill.name}
+                          </span>
+                        </div>
+                        <span className="text-xs font-semibold text-accent">
+                          {skill.level}%
+                        </span>
+                      </div>
+
+                      <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                        <Motion.div
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${skill.level}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.7, ease: "easeOut" }}
+                          className="h-full bg-gradient-to-r from-accent to-cyan-300"
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            </div>
+            </Motion.article>
           ))}
         </div>
       </div>
