@@ -164,7 +164,18 @@ function countUsers() {
 }
 
 function findUserByUsername(username) {
-  return listUsers().find((user) => user.username === username) || null;
+  const normalizedUsername = String(username || "")
+    .trim()
+    .toLowerCase();
+
+  return (
+    listUsers().find(
+      (user) =>
+        String(user.username || "")
+          .trim()
+          .toLowerCase() === normalizedUsername,
+    ) || null
+  );
 }
 
 function findUserById(id) {

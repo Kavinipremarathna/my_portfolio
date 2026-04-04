@@ -12,12 +12,18 @@ const Login = ({ setToken }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const normalizedUsername = username.trim();
+    const normalizedPassword = password;
+
     try {
       const endpoint =
         mode === "setup"
           ? `${API_URL}/api/auth/setup`
           : `${API_URL}/api/auth/login`;
-      const res = await axios.post(endpoint, { username, password });
+      const res = await axios.post(endpoint, {
+        username: normalizedUsername,
+        password: normalizedPassword,
+      });
       const token = res.data.token;
       localStorage.setItem("token", token);
       setToken(token);
@@ -67,6 +73,9 @@ const Login = ({ setToken }) => {
               className="input-field"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               required
             />
           </div>

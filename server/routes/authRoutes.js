@@ -9,16 +9,30 @@ const fileStore = require("../lib/fileStore");
 
 const useMongo = () => mongoose.connection.readyState === 1;
 
+const escapeRegExp = (value) =>
+  String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 // @route   POST api/auth/login
 // @desc    Authenticate user & get token
 // @access  Public
 router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
+  const rawUsername = req.body?.username;
+  const password = req.body?.password;
+  const normalizedUsername = String(rawUsername || "").trim();
+
+  if (!normalizedUsername || !password) {
+    return res.status(400).json({ msg: "Please enter all fields" });
+  }
 
   try {
     const user = useMongo()
-      ? await User.findOne({ username })
-      : fileStore.findUserByUsername(username);
+      ? await User.findOne({
+          username: {
+            $regex: `^${escapeRegExp(normalizedUsername)}$`,
+            $options: "i",
+          },
+        })
+      : fileStore.findUserByUsername(normalizedUsername);
 
     if (!user) {
       return res.status(400).json({ msg: "Invalid Credentials" });
