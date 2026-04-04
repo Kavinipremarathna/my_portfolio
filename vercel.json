@@ -2,6 +2,14 @@
   "version": 2,
   "buildCommand": "cd client && npm run build",
   "installCommand": "npm install && cd client && npm install",
+  "functions": {
+    "api/auth.js": {
+      "includeFiles": "server/data/users.json"
+    },
+    "api/projects.js": {
+      "includeFiles": "server/data/projects.json"
+    }
+  },
   "outputDirectory": "client/dist",
   "rewrites": [
     {

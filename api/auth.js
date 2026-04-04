@@ -3,7 +3,20 @@ import path from "node:path";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const usersFile = path.join(process.cwd(), "server", "data", "users.json");
+const usersFileCandidates = [
+  path.join(process.cwd(), "server", "data", "users.json"),
+  path.join(process.cwd(), "data", "users.json"),
+];
+
+const resolveUsersFile = () => {
+  for (const candidate of usersFileCandidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+
+  return usersFileCandidates[0];
+};
 
 const json = (res, status, payload) => {
   res.status(status).json(payload);
@@ -21,6 +34,7 @@ const setCors = (res) => {
 
 const readUsers = () => {
   try {
+    const usersFile = resolveUsersFile();
     if (!fs.existsSync(usersFile)) {
       return [];
     }
@@ -34,6 +48,7 @@ const readUsers = () => {
 };
 
 const writeUsers = (users) => {
+  const usersFile = resolveUsersFile();
   fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
 };
 
