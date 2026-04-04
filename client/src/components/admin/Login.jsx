@@ -9,6 +9,9 @@ const Login = ({ setToken }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [checkingSetup, setCheckingSetup] = useState(true);
+  const isVercelHost =
+    typeof window !== "undefined" &&
+    window.location.hostname.includes("vercel.app");
 
   useEffect(() => {
     const checkSetupStatus = async () => {
@@ -66,7 +69,9 @@ const Login = ({ setToken }) => {
         }
       }
       setError(
-        message ||
+        (mode === "login" && message === "Invalid Credentials" && isVercelHost
+          ? "Invalid credentials. Use demo admin login: Kavini / Admin@123"
+          : message) ||
           (isNetworkError
             ? "Unable to reach the admin server. Check your API URL or network connection."
             : null) ||
