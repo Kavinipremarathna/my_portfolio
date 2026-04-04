@@ -8,6 +8,14 @@ const usersFileCandidates = [
   path.join(process.cwd(), "data", "users.json"),
 ];
 
+const bootstrapAdmin = {
+  _id: "bootstrap-admin",
+  username: process.env.ADMIN_USERNAME || "Kavini",
+  password:
+    process.env.ADMIN_PASSWORD_HASH ||
+    "$2b$10$pG9uCs3wdjzqKIOL/dBGf.pLyP3YlOMb8cK4CUvo6iXoZUIwsdafC",
+};
+
 const resolveUsersFile = () => {
   for (const candidate of usersFileCandidates) {
     if (fs.existsSync(candidate)) {
@@ -45,6 +53,15 @@ const readUsers = () => {
   } catch {
     return [];
   }
+};
+
+const getEffectiveUsers = () => {
+  const users = readUsers();
+  if (users.length > 0) {
+    return users;
+  }
+
+  return [bootstrapAdmin];
 };
 
 const writeUsers = (users) => {
@@ -89,7 +106,7 @@ export default async function handler(req, res) {
       return json(res, 400, { msg: "Please enter all fields" });
     }
 
-    const users = readUsers();
+    const users = getEffectiveUsers();
     const user = users.find(
       (item) =>
         String(item.username || "")
@@ -110,12 +127,12 @@ export default async function handler(req, res) {
   }
 
   if (route === "setup-status" && req.method === "GET") {
-    const users = readUsers();
+    const users = getEffectiveUsers();
     return json(res, 200, { setupRequired: users.length === 0 });
   }
 
   if (route === "setup" && req.method === "POST") {
-    const users = readUsers();
+    const users = getEffectiveUsers();
     if (users.length > 0) {
       return json(res, 400, { msg: "Admin user already exists" });
     }
@@ -157,7 +174,7 @@ export default async function handler(req, res) {
         token,
         process.env.JWT_SECRET || "portfolio-dev-secret",
       );
-      const users = readUsers();
+      const users = getEffectiveUsers();
       const user = users.find(
         (item) => String(item._id || item.id) === String(decoded.user?.id),
       );
