@@ -23,8 +23,12 @@ const Login = ({ setToken }) => {
       setToken(token);
     } catch (err) {
       const message = err.response?.data?.msg;
+      const isNetworkError = !err.response;
       setError(
         message ||
+          (isNetworkError
+            ? "Unable to reach the admin server. Check your API URL or network connection."
+            : null) ||
           (mode === "setup"
             ? "Unable to create admin account"
             : "Invalid credentials"),
