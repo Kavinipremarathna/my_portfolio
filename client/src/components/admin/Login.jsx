@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Lock } from "lucide-react";
 import { API_URL } from "../../config/api";
@@ -8,6 +8,27 @@ const Login = ({ setToken }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [checkingSetup, setCheckingSetup] = useState(true);
+
+  useEffect(() => {
+    const checkSetupStatus = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/auth/setup-status`);
+        if (res.data?.setupRequired) {
+          setMode("setup");
+          setError(
+            "No admin user found in this environment. Create the first admin account.",
+          );
+        }
+      } catch {
+        // Ignore setup check failures so users can still attempt login manually.
+      } finally {
+        setCheckingSetup(false);
+      }
+    };
+
+    checkSetupStatus();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,6 +51,20 @@ const Login = ({ setToken }) => {
     } catch (err) {
       const message = err.response?.data?.msg;
       const isNetworkError = !err.response;
+      if (!isNetworkError && mode === "login") {
+        try {
+          const status = await axios.get(`${API_URL}/api/auth/setup-status`);
+          if (status.data?.setupRequired) {
+            setMode("setup");
+            setError(
+              "No admin user exists yet. Please create the first admin account.",
+            );
+            return;
+          }
+        } catch {
+          // Fall back to generic error handling.
+        }
+      }
       setError(
         message ||
           (isNetworkError
@@ -62,6 +97,12 @@ const Login = ({ setToken }) => {
         {error && (
           <div className="bg-red-500/20 text-red-500 p-3 rounded mb-4 text-center">
             {error}
+          </div>
+        )}
+
+        {checkingSetup && (
+          <div className="bg-slate-800 text-slate-300 p-3 rounded mb-4 text-center text-sm">
+            Checking admin setup status...
           </div>
         )}
 
