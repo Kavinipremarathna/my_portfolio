@@ -1,50 +1,95 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { Award, Code2, Rocket, ArrowRight } from "lucide-react";
 
 const About = () => {
-    return (
-        <section id="about" className="py-20 bg-secondary">
-            <div className="container mx-auto px-6">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                    className="max-w-4xl mx-auto text-center md:text-left"
-                >
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">About Me</h2>
-                        <div className="w-20 h-1 bg-accent mx-auto rounded"></div>
-                    </div>
-
-                    <div className="flex flex-col md:flex-row gap-12 items-center">
-                        <div className="flex-1 text-slate-300 text-lg leading-relaxed">
-                            <p className="mb-6">
-                                I am currently pursuing a degree in Software Engineering at Sabaragamuwa University of Sri Lanka. My journey began with a curiosity for how things work on the web, which has evolved into a passion for building robust, user-centric applications.
-                            </p>
-                            <p className="mb-6">
-                                I have hands-on experience with modern web technologies including the MERN stack (MongoDB, Express, React, Node.js). I love solving complex problems and turning ideas into reality through clean code and efficient design.
-                            </p>
-                            <p>
-                                When I'm not coding, you can find me exploring new tech trends, contributing to open-source, or gaming.
-                            </p>
-
-                            <div className="mt-8 grid grid-cols-2 gap-4">
-                                <div>
-                                    <h4 className="text-accent font-bold text-xl">3+</h4>
-                                    <span className="text-sm text-slate-400">Years Experience</span>
-                                </div>
-                                <div>
-                                    <h4 className="text-accent font-bold text-xl">5+</h4>
-                                    <span className="text-sm text-slate-400">Projects Completed</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </motion.div>
+  return (
+    <section
+      id="about"
+      className="py-24 bg-gradient-to-b from-secondary to-primary"
+    >
+      <div className="container mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="max-w-6xl mx-auto"
+        >
+          <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
+            <div className="lg:w-5/12 space-y-6">
+              <p className="text-xs uppercase tracking-[0.45em] text-accent font-semibold">
+                About Me
+              </p>
+              <h2 className="text-4xl md:text-5xl font-black text-white leading-tight">
+                Building thoughtful digital products with a premium feel.
+              </h2>
+              <p className="text-slate-300 text-lg leading-8">
+                I’m a software engineering undergraduate focused on creating
+                polished web apps, useful interfaces, and systems that stay fast
+                as they scale.
+              </p>
+              <Link
+                to="/about"
+                className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/20"
+              >
+                View full about page <ArrowRight size={16} />
+              </Link>
             </div>
-        </section>
-    );
+
+            <div className="lg:w-7/12 grid gap-5">
+              <div className="grid gap-4 sm:grid-cols-3">
+                {[
+                  {
+                    icon: Rocket,
+                    label: "Fast delivery",
+                    value: "Practical builds",
+                  },
+                  { icon: Code2, label: "Core stack", value: "React + Node" },
+                  {
+                    icon: Award,
+                    label: "Quality focus",
+                    value: "Clean UI systems",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm"
+                  >
+                    <item.icon className="text-accent" size={22} />
+                    <p className="mt-4 text-xs uppercase tracking-[0.35em] text-slate-400">
+                      {item.label}
+                    </p>
+                    <p className="mt-2 text-xl font-semibold text-white">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-[2rem] border border-white/10 bg-primary/70 p-6 md:p-8 shadow-2xl shadow-black/20">
+                <p className="text-sm uppercase tracking-[0.35em] text-accent font-semibold">
+                  What I do
+                </p>
+                <div className="mt-5 grid gap-4 md:grid-cols-2 text-slate-300 leading-7">
+                  <p>
+                    I turn ideas into responsive interfaces, connecting frontend
+                    polish with reliable backend logic and deployment workflows.
+                  </p>
+                  <p>
+                    When I’m not building, I’m learning better ways to improve
+                    user experience, performance, and maintainable code
+                    structure.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
 };
 
 export default About;
