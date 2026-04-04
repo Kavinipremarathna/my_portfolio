@@ -49,7 +49,10 @@ const AboutPage = () => {
       <Navbar />
 
       <main className="pt-24">
-        <section className="relative overflow-hidden border-b border-white/5 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.16),transparent_30%),linear-gradient(180deg,rgba(15,23,42,0.98),rgba(15,23,42,0.94))]">
+        <section
+          id="top"
+          className="relative overflow-hidden border-b border-white/5 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.16),transparent_30%),linear-gradient(180deg,rgba(15,23,42,0.98),rgba(15,23,42,0.94))]"
+        >
           <div className="absolute inset-0 opacity-30 bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:60px_60px]" />
           <div className="container mx-auto px-6 py-20 relative">
             <div className="max-w-6xl mx-auto grid gap-12 lg:grid-cols-[1.05fr_0.95fr] items-center">
@@ -153,7 +156,10 @@ const AboutPage = () => {
           </div>
         </section>
 
-        <section className="py-24 bg-secondary/80 border-b border-white/5">
+        <section
+          id="about-details"
+          className="py-24 bg-secondary/80 border-b border-white/5"
+        >
           <div className="container mx-auto px-6 max-w-6xl">
             <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] items-start">
               <div>
@@ -191,7 +197,7 @@ const AboutPage = () => {
           </div>
         </section>
 
-        <section className="py-24 bg-primary">
+        <section id="journey" className="py-24 bg-primary">
           <div className="container mx-auto px-6 max-w-6xl">
             <div className="flex items-end justify-between gap-6 mb-10 flex-wrap">
               <div>
@@ -234,7 +240,7 @@ const AboutPage = () => {
           </div>
         </section>
 
-        <section className="py-24 bg-secondary/80">
+        <section id="expertise" className="py-24 bg-secondary/80">
           <div className="container mx-auto px-6 max-w-6xl">
             <div className="text-center max-w-3xl mx-auto mb-12">
               <p className="text-xs uppercase tracking-[0.45em] text-accent font-semibold">
@@ -258,7 +264,7 @@ const AboutPage = () => {
           </div>
         </section>
 
-        <section className="py-24 bg-primary">
+        <section id="contact" className="py-24 bg-primary">
           <div className="container mx-auto px-6 max-w-6xl">
             <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(135deg,rgba(56,189,248,0.12),rgba(15,23,42,0.92))] p-8 md:p-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
               <div>

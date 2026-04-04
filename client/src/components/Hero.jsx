@@ -222,7 +222,7 @@ const Hero = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="absolute -bottom-6 -left-4 rounded-2xl border border-white/10 bg-primary/90 px-4 py-3 shadow-xl backdrop-blur-sm">
+            <div className="absolute z-30 bottom-2 left-2 md:-bottom-6 md:-left-4 rounded-2xl border border-white/10 bg-primary/95 px-4 py-3 shadow-2xl backdrop-blur-sm">
               <p className="text-[11px] uppercase tracking-[0.35em] text-slate-400">
                 Available For
               </p>
