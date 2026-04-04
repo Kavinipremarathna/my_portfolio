@@ -5,8 +5,8 @@
   "outputDirectory": "client/dist",
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/api/auth/(.*)",
+      "destination": "/api/auth?route=$1"
     },
     {
       "source": "/(.*)",
