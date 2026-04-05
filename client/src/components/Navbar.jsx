@@ -46,18 +46,30 @@ const Navbar = () => {
     ? [
         { name: "Home", href: "/" },
         { name: "About", href: "/about" },
+        { name: "Gallery", href: "/gallery" },
         { name: "Skills", href: "/skills" },
         { name: "Projects", href: "/#projects" },
         { name: "Experience", href: "/#experience" },
         { name: "Contact", href: "/#contact" },
+        {
+          name: "Blogs",
+          href: "https://medium.com/@kavinipremarathna",
+          external: true,
+        },
       ]
     : [
         { name: "Home", href: "/#home" },
         { name: "About", href: "/about" },
+        { name: "Gallery", href: "/gallery" },
         { name: "Skills", href: "/#skills" },
         { name: "Projects", href: "/#projects" },
         { name: "Experience", href: "/#experience" },
         { name: "Contact", href: "/#contact" },
+        {
+          name: "Blogs",
+          href: "https://medium.com/@kavinipremarathna",
+          external: true,
+        },
       ];
 
   return (
@@ -83,6 +95,8 @@ const Navbar = () => {
             <a
               key={link.name}
               href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
               className="text-text hover:text-accent transition-colors font-medium tracking-wide"
             >
               {link.name}
@@ -137,6 +151,8 @@ const Navbar = () => {
               <a
                 key={link.name}
                 href={link.href}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener noreferrer" : undefined}
                 className="text-text hover:text-accent transition-colors py-2"
                 onClick={() => setIsOpen(false)}
               >

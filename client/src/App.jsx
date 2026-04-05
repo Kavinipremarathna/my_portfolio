@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import SkillsPage from "./pages/SkillsPage";
 import Admin from "./pages/Admin";
+import Gallery from "./pages/Gallery";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/gallery" element={<Gallery />} />
         <Route path="/skills" element={<SkillsPage />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<Navigate to="/" replace />} />

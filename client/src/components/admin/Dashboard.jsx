@@ -18,29 +18,52 @@ const emptySkillForm = {
   category: "Frontend",
 };
 
+const emptyGalleryForm = {
+  title: "",
+  caption: "",
+  category: "general",
+  imageUrl: "",
+};
+
+const galleryCategorySuggestions = [
+  "nature",
+  "personal",
+  "workspace",
+  "skills",
+  "about",
+  "general",
+];
+
 const Dashboard = ({ token, setToken }) => {
   const [projects, setProjects] = useState([]);
   const [skills, setSkills] = useState([]);
+  const [galleryPhotos, setGalleryPhotos] = useState([]);
   const [activeSection, setActiveSection] = useState("projects");
   const [editingType, setEditingType] = useState(null);
   const [currentId, setCurrentId] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [projectForm, setProjectForm] = useState(emptyProjectForm);
   const [skillForm, setSkillForm] = useState(emptySkillForm);
+  const [galleryForm, setGalleryForm] = useState(emptyGalleryForm);
 
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
-        const [projectsResponse, skillsResponse] = await Promise.all([
-          axios.get(`${API_URL}/api/projects`),
-          axios.get(`${API_URL}/api/skills`),
-        ]);
+        const [projectsResponse, skillsResponse, galleryResponse] =
+          await Promise.all([
+            axios.get(`${API_URL}/api/projects`),
+            axios.get(`${API_URL}/api/skills`),
+            axios.get(`${API_URL}/api/gallery`),
+          ]);
 
         setProjects(
           Array.isArray(projectsResponse.data) ? projectsResponse.data : [],
         );
         setSkills(
           Array.isArray(skillsResponse.data) ? skillsResponse.data : [],
+        );
+        setGalleryPhotos(
+          Array.isArray(galleryResponse.data) ? galleryResponse.data : [],
         );
       } catch (err) {
         console.error(err);
@@ -68,6 +91,15 @@ const Dashboard = ({ token, setToken }) => {
     }
   };
 
+  const refreshGallery = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/gallery`);
+      setGalleryPhotos(Array.isArray(response.data) ? response.data : []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     setToken(null);
@@ -76,6 +108,7 @@ const Dashboard = ({ token, setToken }) => {
   const resetForms = () => {
     setProjectForm(emptyProjectForm);
     setSkillForm(emptySkillForm);
+    setGalleryForm(emptyGalleryForm);
     setEditingType(null);
     setCurrentId(null);
   };
@@ -121,6 +154,27 @@ const Dashboard = ({ token, setToken }) => {
     }
 
     setEditingType("skill");
+    setShowForm(true);
+  };
+
+  const openGalleryForm = (photo = null, category = "general") => {
+    if (photo) {
+      setGalleryForm({
+        title: photo.title || "",
+        caption: photo.caption || "",
+        category: photo.category || "general",
+        imageUrl: photo.imageUrl || "",
+      });
+      setCurrentId(photo._id);
+    } else {
+      setGalleryForm({
+        ...emptyGalleryForm,
+        category,
+      });
+      setCurrentId(null);
+    }
+
+    setEditingType("gallery");
     setShowForm(true);
   };
 
@@ -175,6 +229,27 @@ const Dashboard = ({ token, setToken }) => {
         refreshSkills();
       }
 
+      if (editingType === "gallery") {
+        const photoData = {
+          title: galleryForm.title.trim(),
+          caption: galleryForm.caption.trim(),
+          category: galleryForm.category.trim().toLowerCase() || "general",
+          imageUrl: galleryForm.imageUrl.trim(),
+        };
+
+        if (currentId) {
+          await axios.put(
+            `${API_URL}/api/gallery/${currentId}`,
+            photoData,
+            config,
+          );
+        } else {
+          await axios.post(`${API_URL}/api/gallery`, photoData, config);
+        }
+
+        refreshGallery();
+      }
+
       setShowForm(false);
       resetForms();
     } catch (err) {
@@ -219,6 +294,20 @@ const Dashboard = ({ token, setToken }) => {
     }
   };
 
+  const handleDeleteGalleryPhoto = async (id) => {
+    if (!window.confirm("Delete this photo?")) return;
+
+    try {
+      await axios.delete(`${API_URL}/api/gallery/${id}`, {
+        headers: { "x-auth-token": token },
+      });
+      refreshGallery();
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting photo");
+    }
+  };
+
   const groupedSkills = skills.reduce((groups, skill) => {
     const category = skill.category || "Other";
     if (!groups[category]) {
@@ -228,9 +317,18 @@ const Dashboard = ({ token, setToken }) => {
     return groups;
   }, {});
 
-  const sectionLabel = activeSection === "projects" ? "Projects" : "Skills";
+  const sectionLabel =
+    activeSection === "projects"
+      ? "Projects"
+      : activeSection === "skills"
+        ? "Skills"
+        : "Gallery";
   const sectionCount =
-    activeSection === "projects" ? projects.length : skills.length;
+    activeSection === "projects"
+      ? projects.length
+      : activeSection === "skills"
+        ? skills.length
+        : galleryPhotos.length;
 
   return (
     <div className="min-h-screen bg-primary">
@@ -280,6 +378,17 @@ const Dashboard = ({ token, setToken }) => {
             >
               Skills
             </button>
+            <button
+              type="button"
+              onClick={() => setActiveSection("gallery")}
+              className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${
+                activeSection === "gallery"
+                  ? "bg-accent text-primary"
+                  : "text-slate-300 hover:text-white"
+              }`}
+            >
+              Gallery
+            </button>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -292,14 +401,20 @@ const Dashboard = ({ token, setToken }) => {
                 resetForms();
                 if (activeSection === "projects") {
                   openProjectForm();
-                } else {
+                } else if (activeSection === "skills") {
                   openSkillForm();
+                } else {
+                  openGalleryForm();
                 }
               }}
               className="btn-primary flex items-center gap-2"
             >
               <Plus size={18} /> Add{" "}
-              {activeSection === "projects" ? "Project" : "Skill Section"}
+              {activeSection === "projects"
+                ? "Project"
+                : activeSection === "skills"
+                  ? "Skill Section"
+                  : "Gallery Photo"}
             </button>
           </div>
         </div>
@@ -314,14 +429,20 @@ const Dashboard = ({ token, setToken }) => {
                       ? currentId
                         ? "Edit Project"
                         : "New Project"
-                      : currentId
-                        ? "Edit Skill"
-                        : "New Skill"}
+                      : editingType === "skill"
+                        ? currentId
+                          ? "Edit Skill"
+                          : "New Skill"
+                        : currentId
+                          ? "Edit Gallery Photo"
+                          : "New Gallery Photo"}
                   </h3>
                   <p className="text-sm text-slate-400 mt-1">
                     {editingType === "skill"
                       ? "Add a skill name and category. The category becomes a separate section on the site."
-                      : "Create or update a portfolio project."}
+                      : editingType === "gallery"
+                        ? "Add a title, category, and image URL for your gallery page."
+                        : "Create or update a portfolio project."}
                   </p>
                 </div>
                 <button
@@ -454,7 +575,7 @@ const Dashboard = ({ token, setToken }) => {
                       </label>
                     </div>
                   </>
-                ) : (
+                ) : editingType === "skill" ? (
                   <>
                     <div>
                       <label className="block text-slate-400 mb-1">
@@ -490,6 +611,98 @@ const Dashboard = ({ token, setToken }) => {
                       />
                     </div>
                   </>
+                ) : (
+                  <>
+                    <div>
+                      <label className="block text-slate-400 mb-1">Title</label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        required
+                        value={galleryForm.title}
+                        onChange={(e) =>
+                          setGalleryForm({
+                            ...galleryForm,
+                            title: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 mb-1">
+                        Caption
+                      </label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        value={galleryForm.caption}
+                        onChange={(e) =>
+                          setGalleryForm({
+                            ...galleryForm,
+                            caption: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Category
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          required
+                          placeholder="workspace"
+                          value={galleryForm.category}
+                          onChange={(e) =>
+                            setGalleryForm({
+                              ...galleryForm,
+                              category: e.target.value,
+                            })
+                          }
+                        />
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {galleryCategorySuggestions.map((category) => (
+                            <button
+                              key={category}
+                              type="button"
+                              onClick={() =>
+                                setGalleryForm({
+                                  ...galleryForm,
+                                  category,
+                                })
+                              }
+                              className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.15em] transition-colors ${
+                                galleryForm.category.toLowerCase() === category
+                                  ? "border-accent/40 bg-accent/15 text-accent"
+                                  : "border-white/10 bg-white/5 text-slate-300 hover:border-white/25"
+                              }`}
+                            >
+                              {category}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Image URL
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          required
+                          value={galleryForm.imageUrl}
+                          onChange={(e) =>
+                            setGalleryForm({
+                              ...galleryForm,
+                              imageUrl: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                  </>
                 )}
 
                 <button type="submit" className="w-full btn-primary mt-4">
@@ -497,9 +710,13 @@ const Dashboard = ({ token, setToken }) => {
                     ? currentId
                       ? "Update Project"
                       : "Create Project"
-                    : currentId
-                      ? "Update Skill"
-                      : "Create Skill"}
+                    : editingType === "skill"
+                      ? currentId
+                        ? "Update Skill"
+                        : "Create Skill"
+                      : currentId
+                        ? "Update Photo"
+                        : "Create Photo"}
                 </button>
               </form>
             </div>
@@ -552,7 +769,7 @@ const Dashboard = ({ token, setToken }) => {
               <p className="text-slate-500 text-center">No projects found.</p>
             )}
           </div>
-        ) : (
+        ) : activeSection === "skills" ? (
           <div className="space-y-6">
             {Object.entries(groupedSkills).map(([category, items]) => (
               <div
@@ -613,6 +830,56 @@ const Dashboard = ({ token, setToken }) => {
               <div className="rounded-2xl border border-white/10 bg-secondary/70 p-8 text-center text-slate-400">
                 No skills added yet. Create your first separate section with the
                 button above.
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {galleryPhotos.map((photo) => (
+              <div
+                key={photo._id}
+                className="rounded-2xl border border-white/10 bg-secondary/70 overflow-hidden"
+              >
+                <div className="h-44 bg-black/30">
+                  <img
+                    src={photo.imageUrl}
+                    alt={photo.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-4">
+                  <p className="text-xs uppercase tracking-[0.3em] text-accent">
+                    {photo.category || "general"}
+                  </p>
+                  <h4 className="mt-2 text-white font-bold truncate">
+                    {photo.title}
+                  </h4>
+                  <p className="mt-1 text-slate-400 text-sm min-h-[40px]">
+                    {photo.caption || "No caption"}
+                  </p>
+
+                  <div className="mt-4 flex items-center justify-end gap-2">
+                    <button
+                      onClick={() => openGalleryForm(photo)}
+                      className="p-2 hover:bg-slate-700 rounded text-accent"
+                    >
+                      <Edit size={16} />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteGalleryPhoto(photo._id)}
+                      className="p-2 hover:bg-slate-700 rounded text-red-500"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {galleryPhotos.length === 0 && (
+              <div className="rounded-2xl border border-white/10 bg-secondary/70 p-8 text-center text-slate-400 sm:col-span-2 xl:col-span-3">
+                No gallery photos yet. Add your first photo from the button
+                above.
               </div>
             )}
           </div>

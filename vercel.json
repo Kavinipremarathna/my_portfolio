@@ -11,6 +11,9 @@
     },
     "api/skills.js": {
       "includeFiles": "server/data/skills.json"
+    },
+    "api/gallery.js": {
+      "includeFiles": "server/data/gallery.json"
     }
   },
   "outputDirectory": "client/dist",
@@ -26,6 +29,10 @@
     {
       "source": "/api/auth/(.*)",
       "destination": "/api/auth?route=$1"
+    },
+    {
+      "source": "/api/gallery/(.*)",
+      "destination": "/api/gallery?route=$1"
     },
     {
       "source": "/(.*)",

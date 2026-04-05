@@ -6,6 +6,7 @@ const dataDir = path.join(__dirname, "..", "data");
 const projectsFile = path.join(dataDir, "projects.json");
 const usersFile = path.join(dataDir, "users.json");
 const skillsFile = path.join(dataDir, "skills.json");
+const galleryFile = path.join(dataDir, "gallery.json");
 
 function ensureFile(filePath, defaultValue) {
   if (!fs.existsSync(dataDir)) {
@@ -48,6 +49,17 @@ function normalizeSkill(skill) {
     name: skill.name,
     category: skill.category,
     createdAt: skill.createdAt || new Date().toISOString(),
+  };
+}
+
+function normalizeGalleryPhoto(photo) {
+  return {
+    _id: photo._id || crypto.randomUUID(),
+    title: photo.title,
+    caption: photo.caption || "",
+    category: photo.category || "general",
+    imageUrl: photo.imageUrl,
+    createdAt: photo.createdAt || new Date().toISOString(),
   };
 }
 
@@ -155,6 +167,58 @@ function deleteSkill(id) {
   return true;
 }
 
+function listGalleryPhotos() {
+  return readJson(galleryFile, [])
+    .map(normalizeGalleryPhoto)
+    .sort(
+      (left, right) => new Date(right.createdAt) - new Date(left.createdAt),
+    );
+}
+
+function getGalleryPhotoById(id) {
+  return listGalleryPhotos().find((photo) => photo._id === id) || null;
+}
+
+function createGalleryPhoto(photo) {
+  const photos = listGalleryPhotos();
+  const newPhoto = normalizeGalleryPhoto(photo);
+  photos.unshift(newPhoto);
+  writeJson(galleryFile, photos);
+  return newPhoto;
+}
+
+function updateGalleryPhoto(id, updates) {
+  const photos = listGalleryPhotos();
+  const index = photos.findIndex((photo) => photo._id === id);
+
+  if (index === -1) {
+    return null;
+  }
+
+  const updatedPhoto = normalizeGalleryPhoto({
+    ...photos[index],
+    ...updates,
+    _id: id,
+    createdAt: photos[index].createdAt,
+  });
+
+  photos[index] = updatedPhoto;
+  writeJson(galleryFile, photos);
+  return updatedPhoto;
+}
+
+function deleteGalleryPhoto(id) {
+  const photos = listGalleryPhotos();
+  const filteredPhotos = photos.filter((photo) => photo._id !== id);
+
+  if (filteredPhotos.length === photos.length) {
+    return false;
+  }
+
+  writeJson(galleryFile, filteredPhotos);
+  return true;
+}
+
 function listUsers() {
   return readJson(usersFile, []);
 }
@@ -206,6 +270,11 @@ module.exports = {
   createSkill,
   updateSkill,
   deleteSkill,
+  listGalleryPhotos,
+  getGalleryPhotoById,
+  createGalleryPhoto,
+  updateGalleryPhoto,
+  deleteGalleryPhoto,
   listUsers,
   countUsers,
   findUserByUsername,
