@@ -56,6 +56,11 @@ const Navbar = () => {
           href: "https://medium.com/@kavinipremarathna",
           external: true,
         },
+        {
+          name: "Resume",
+          href: "/resume.pdf",
+          download: true,
+        },
       ]
     : [
         { name: "Home", href: "/#home" },
@@ -69,6 +74,11 @@ const Navbar = () => {
           name: "Blogs",
           href: "https://medium.com/@kavinipremarathna",
           external: true,
+        },
+        {
+          name: "Resume",
+          href: "/resume.pdf",
+          download: true,
         },
       ];
 
@@ -97,6 +107,9 @@ const Navbar = () => {
               href={link.href}
               target={link.external ? "_blank" : undefined}
               rel={link.external ? "noopener noreferrer" : undefined}
+              download={
+                link.download ? "Kavini-Premarathna-Resume.pdf" : undefined
+              }
               className="text-text hover:text-accent transition-colors font-medium tracking-wide"
             >
               {link.name}
@@ -153,6 +166,9 @@ const Navbar = () => {
                 href={link.href}
                 target={link.external ? "_blank" : undefined}
                 rel={link.external ? "noopener noreferrer" : undefined}
+                download={
+                  link.download ? "Kavini-Premarathna-Resume.pdf" : undefined
+                }
                 className="text-text hover:text-accent transition-colors py-2"
                 onClick={() => setIsOpen(false)}
               >

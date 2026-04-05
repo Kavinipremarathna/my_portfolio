@@ -6,6 +6,7 @@ import {
   FiMail,
   FiArrowDown,
   FiArrowRight,
+  FiDownload,
   FiCode,
 } from "react-icons/fi";
 import { Sparkles } from "lucide-react";
@@ -131,6 +132,15 @@ const Hero = () => {
               className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-primary shadow-lg shadow-accent/20 transition-transform hover:-translate-y-0.5"
             >
               View Projects <FiArrowRight size={16} />
+            </Motion.a>
+            <Motion.a
+              href="/resume.pdf"
+              download="Kavini-Premarathna-Resume.pdf"
+              whileHover={reduceMotion ? {} : { y: -3, scale: 1.02 }}
+              whileTap={reduceMotion ? {} : { scale: 0.98 }}
+              className="inline-flex items-center gap-2 rounded-full border border-accent/35 bg-accent/10 px-6 py-3 font-semibold text-accent transition-colors hover:bg-accent/20"
+            >
+              Download Resume <FiDownload size={16} />
             </Motion.a>
             <Motion.a
               href="#contact"
