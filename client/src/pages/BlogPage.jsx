@@ -6,6 +6,8 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { API_URL } from "../config/api";
 
+const mediumProfileUrl = "https://medium.com/@kavinipremarathna";
+
 const BlogPage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -174,6 +176,15 @@ const BlogPage = () => {
                   publish to Medium from admin and keep references for each
                   post.
                 </p>
+
+                <a
+                  href={mediumProfileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full border border-accent/35 bg-accent/10 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/20"
+                >
+                  See My Medium Articles <ArrowUpRight size={14} />
+                </a>
 
                 <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300 leading-7">
                   Tip: In admin, create articles with source set to
