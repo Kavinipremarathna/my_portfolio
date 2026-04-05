@@ -90,12 +90,12 @@ const Hero = () => {
         }
       />
 
-      <div className="container mx-auto px-6 z-10 grid gap-12 md:grid-cols-[1.1fr_0.9fr] items-center">
+      <div className="mx-auto grid w-full max-w-[1200px] items-center gap-10 px-5 sm:px-6 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)] lg:gap-14 lg:px-8 z-10">
         <Motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-3xl"
+          className="mx-auto max-w-3xl lg:mx-0"
         >
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-300">
             <Sparkles size={14} className="text-accent" />
@@ -104,7 +104,7 @@ const Hero = () => {
           <h2 className="mt-6 text-sm font-semibold uppercase tracking-[0.45em] text-accent/80">
             Hello, I am
           </h2>
-          <h1 className="mt-4 text-5xl md:text-7xl font-black text-white leading-[0.95] tracking-tight">
+          <h1 className="mt-4 text-[2.8rem] font-black leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5.2rem]">
             Kavini
             <br />
             Premarathna
@@ -118,7 +118,7 @@ const Hero = () => {
             </p>
           </div>
 
-          <p className="mt-6 max-w-2xl text-lg md:text-xl text-slate-300 leading-8">
+          <p className="mt-6 max-w-[37rem] text-lg leading-8 text-slate-300 md:text-xl">
             Building secure and scalable digital experiences with elegant UI,
             smooth motion, and production-ready engineering.
           </p>
@@ -142,7 +142,7 @@ const Hero = () => {
             </Motion.a>
           </div>
 
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl">
+          <div className="mt-10 grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
               { label: "Focus", value: "Full-Stack" },
               { label: "Stack", value: "React + Node" },
@@ -195,10 +195,10 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex justify-center md:justify-end"
+          className="flex justify-center lg:justify-center xl:justify-end"
         >
           <Motion.div
-            className="relative w-[280px] h-[360px] md:w-[360px] md:h-[460px]"
+            className="relative h-[330px] w-[260px] sm:h-[410px] sm:w-[320px] lg:h-[460px] lg:w-[360px] xl:h-[500px] xl:w-[390px]"
             whileHover={reduceMotion ? {} : { rotate: -2, scale: 1.02 }}
           >
             <Motion.div
