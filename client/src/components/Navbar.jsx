@@ -51,8 +51,9 @@ const Navbar = () => {
         { name: "Projects", href: "/projects" },
         { name: "Experience", href: "/experience" },
         { name: "Contact", href: "/contact" },
+        { name: "Blogs", href: "/blog" },
         {
-          name: "Blogs",
+          name: "Medium",
           href: "https://medium.com/@kavinipremarathna",
           external: true,
         },
@@ -65,8 +66,9 @@ const Navbar = () => {
         { name: "Projects", href: "/projects" },
         { name: "Experience", href: "/experience" },
         { name: "Contact", href: "/contact" },
+        { name: "Blogs", href: "/blog" },
         {
-          name: "Blogs",
+          name: "Medium",
           href: "https://medium.com/@kavinipremarathna",
           external: true,
         },
