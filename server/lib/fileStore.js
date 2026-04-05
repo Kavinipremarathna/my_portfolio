@@ -7,6 +7,7 @@ const projectsFile = path.join(dataDir, "projects.json");
 const usersFile = path.join(dataDir, "users.json");
 const skillsFile = path.join(dataDir, "skills.json");
 const galleryFile = path.join(dataDir, "gallery.json");
+const articlesFile = path.join(dataDir, "articles.json");
 
 function ensureFile(filePath, defaultValue) {
   if (!fs.existsSync(dataDir)) {
@@ -60,6 +61,26 @@ function normalizeGalleryPhoto(photo) {
     category: photo.category || "general",
     imageUrl: photo.imageUrl,
     createdAt: photo.createdAt || new Date().toISOString(),
+  };
+}
+
+function normalizeArticle(article) {
+  return {
+    _id: article._id || crypto.randomUUID(),
+    slug: String(article.slug || "")
+      .trim()
+      .toLowerCase(),
+    title: article.title,
+    excerpt: article.excerpt || "",
+    content: article.content || "",
+    category: article.category || "Engineering",
+    readTime: article.readTime || "5 min read",
+    date: article.date || new Date().toISOString().slice(0, 10),
+    tags: Array.isArray(article.tags) ? article.tags : [],
+    featured: Boolean(article.featured),
+    source: article.source || "original",
+    mediumUrl: article.mediumUrl || "",
+    createdAt: article.createdAt || new Date().toISOString(),
   };
 }
 
@@ -219,6 +240,67 @@ function deleteGalleryPhoto(id) {
   return true;
 }
 
+function listArticles() {
+  return readJson(articlesFile, [])
+    .map(normalizeArticle)
+    .sort(
+      (left, right) => new Date(right.createdAt) - new Date(left.createdAt),
+    );
+}
+
+function getArticleById(id) {
+  return listArticles().find((article) => article._id === id) || null;
+}
+
+function getArticleBySlug(slug) {
+  const normalizedSlug = String(slug || "")
+    .trim()
+    .toLowerCase();
+  return (
+    listArticles().find((article) => article.slug === normalizedSlug) || null
+  );
+}
+
+function createArticle(article) {
+  const articles = listArticles();
+  const newArticle = normalizeArticle(article);
+  articles.unshift(newArticle);
+  writeJson(articlesFile, articles);
+  return newArticle;
+}
+
+function updateArticle(id, updates) {
+  const articles = listArticles();
+  const index = articles.findIndex((article) => article._id === id);
+
+  if (index === -1) {
+    return null;
+  }
+
+  const updatedArticle = normalizeArticle({
+    ...articles[index],
+    ...updates,
+    _id: id,
+    createdAt: articles[index].createdAt,
+  });
+
+  articles[index] = updatedArticle;
+  writeJson(articlesFile, articles);
+  return updatedArticle;
+}
+
+function deleteArticle(id) {
+  const articles = listArticles();
+  const filteredArticles = articles.filter((article) => article._id !== id);
+
+  if (filteredArticles.length === articles.length) {
+    return false;
+  }
+
+  writeJson(articlesFile, filteredArticles);
+  return true;
+}
+
 function listUsers() {
   return readJson(usersFile, []);
 }
@@ -275,6 +357,12 @@ module.exports = {
   createGalleryPhoto,
   updateGalleryPhoto,
   deleteGalleryPhoto,
+  listArticles,
+  getArticleById,
+  getArticleBySlug,
+  createArticle,
+  updateArticle,
+  deleteArticle,
   listUsers,
   countUsers,
   findUserByUsername,

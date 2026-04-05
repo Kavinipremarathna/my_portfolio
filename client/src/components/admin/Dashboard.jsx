@@ -25,6 +25,20 @@ const emptyGalleryForm = {
   imageUrl: "",
 };
 
+const emptyArticleForm = {
+  title: "",
+  slug: "",
+  excerpt: "",
+  content: "",
+  category: "Engineering",
+  readTime: "5 min read",
+  date: new Date().toISOString().slice(0, 10),
+  tags: "",
+  featured: false,
+  source: "original",
+  mediumUrl: "",
+};
+
 const galleryCategorySuggestions = [
   "nature",
   "personal",
@@ -38,6 +52,7 @@ const Dashboard = ({ token, setToken }) => {
   const [projects, setProjects] = useState([]);
   const [skills, setSkills] = useState([]);
   const [galleryPhotos, setGalleryPhotos] = useState([]);
+  const [articles, setArticles] = useState([]);
   const [activeSection, setActiveSection] = useState("projects");
   const [editingType, setEditingType] = useState(null);
   const [currentId, setCurrentId] = useState(null);
@@ -45,16 +60,22 @@ const Dashboard = ({ token, setToken }) => {
   const [projectForm, setProjectForm] = useState(emptyProjectForm);
   const [skillForm, setSkillForm] = useState(emptySkillForm);
   const [galleryForm, setGalleryForm] = useState(emptyGalleryForm);
+  const [articleForm, setArticleForm] = useState(emptyArticleForm);
 
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
-        const [projectsResponse, skillsResponse, galleryResponse] =
-          await Promise.all([
-            axios.get(`${API_URL}/api/projects`),
-            axios.get(`${API_URL}/api/skills`),
-            axios.get(`${API_URL}/api/gallery`),
-          ]);
+        const [
+          projectsResponse,
+          skillsResponse,
+          galleryResponse,
+          articlesResponse,
+        ] = await Promise.all([
+          axios.get(`${API_URL}/api/projects`),
+          axios.get(`${API_URL}/api/skills`),
+          axios.get(`${API_URL}/api/gallery`),
+          axios.get(`${API_URL}/api/articles`),
+        ]);
 
         setProjects(
           Array.isArray(projectsResponse.data) ? projectsResponse.data : [],
@@ -64,6 +85,9 @@ const Dashboard = ({ token, setToken }) => {
         );
         setGalleryPhotos(
           Array.isArray(galleryResponse.data) ? galleryResponse.data : [],
+        );
+        setArticles(
+          Array.isArray(articlesResponse.data) ? articlesResponse.data : [],
         );
       } catch (err) {
         console.error(err);
@@ -100,6 +124,15 @@ const Dashboard = ({ token, setToken }) => {
     }
   };
 
+  const refreshArticles = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/articles`);
+      setArticles(Array.isArray(response.data) ? response.data : []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     setToken(null);
@@ -109,6 +142,7 @@ const Dashboard = ({ token, setToken }) => {
     setProjectForm(emptyProjectForm);
     setSkillForm(emptySkillForm);
     setGalleryForm(emptyGalleryForm);
+    setArticleForm(emptyArticleForm);
     setEditingType(null);
     setCurrentId(null);
   };
@@ -175,6 +209,31 @@ const Dashboard = ({ token, setToken }) => {
     }
 
     setEditingType("gallery");
+    setShowForm(true);
+  };
+
+  const openArticleForm = (article = null) => {
+    if (article) {
+      setArticleForm({
+        title: article.title || "",
+        slug: article.slug || "",
+        excerpt: article.excerpt || "",
+        content: article.content || "",
+        category: article.category || "Engineering",
+        readTime: article.readTime || "5 min read",
+        date: article.date || new Date().toISOString().slice(0, 10),
+        tags: Array.isArray(article.tags) ? article.tags.join(", ") : "",
+        featured: Boolean(article.featured),
+        source: article.source || "original",
+        mediumUrl: article.mediumUrl || "",
+      });
+      setCurrentId(article._id);
+    } else {
+      setArticleForm(emptyArticleForm);
+      setCurrentId(null);
+    }
+
+    setEditingType("article");
     setShowForm(true);
   };
 
@@ -250,6 +309,41 @@ const Dashboard = ({ token, setToken }) => {
         refreshGallery();
       }
 
+      if (editingType === "article") {
+        const normalizedTags = Array.isArray(articleForm.tags)
+          ? articleForm.tags
+          : String(articleForm.tags)
+              .split(",")
+              .map((tag) => tag.trim())
+              .filter(Boolean);
+
+        const articleData = {
+          title: articleForm.title.trim(),
+          slug: articleForm.slug.trim(),
+          excerpt: articleForm.excerpt.trim(),
+          content: articleForm.content.trim(),
+          category: articleForm.category.trim(),
+          readTime: articleForm.readTime.trim(),
+          date: articleForm.date,
+          tags: normalizedTags,
+          featured: Boolean(articleForm.featured),
+          source: articleForm.source,
+          mediumUrl: articleForm.mediumUrl.trim(),
+        };
+
+        if (currentId) {
+          await axios.put(
+            `${API_URL}/api/articles/${currentId}`,
+            articleData,
+            config,
+          );
+        } else {
+          await axios.post(`${API_URL}/api/articles`, articleData, config);
+        }
+
+        refreshArticles();
+      }
+
       setShowForm(false);
       resetForms();
     } catch (err) {
@@ -308,6 +402,20 @@ const Dashboard = ({ token, setToken }) => {
     }
   };
 
+  const handleDeleteArticle = async (id) => {
+    if (!window.confirm("Delete this article?")) return;
+
+    try {
+      await axios.delete(`${API_URL}/api/articles/${id}`, {
+        headers: { "x-auth-token": token },
+      });
+      refreshArticles();
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting article");
+    }
+  };
+
   const groupedSkills = skills.reduce((groups, skill) => {
     const category = skill.category || "Other";
     if (!groups[category]) {
@@ -322,13 +430,17 @@ const Dashboard = ({ token, setToken }) => {
       ? "Projects"
       : activeSection === "skills"
         ? "Skills"
-        : "Gallery";
+        : activeSection === "gallery"
+          ? "Gallery"
+          : "Articles";
   const sectionCount =
     activeSection === "projects"
       ? projects.length
       : activeSection === "skills"
         ? skills.length
-        : galleryPhotos.length;
+        : activeSection === "gallery"
+          ? galleryPhotos.length
+          : articles.length;
 
   return (
     <div className="min-h-screen bg-primary">
@@ -389,6 +501,17 @@ const Dashboard = ({ token, setToken }) => {
             >
               Gallery
             </button>
+            <button
+              type="button"
+              onClick={() => setActiveSection("articles")}
+              className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${
+                activeSection === "articles"
+                  ? "bg-accent text-primary"
+                  : "text-slate-300 hover:text-white"
+              }`}
+            >
+              Articles
+            </button>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -403,8 +526,10 @@ const Dashboard = ({ token, setToken }) => {
                   openProjectForm();
                 } else if (activeSection === "skills") {
                   openSkillForm();
-                } else {
+                } else if (activeSection === "gallery") {
                   openGalleryForm();
+                } else {
+                  openArticleForm();
                 }
               }}
               className="btn-primary flex items-center gap-2"
@@ -414,7 +539,9 @@ const Dashboard = ({ token, setToken }) => {
                 ? "Project"
                 : activeSection === "skills"
                   ? "Skill Section"
-                  : "Gallery Photo"}
+                  : activeSection === "gallery"
+                    ? "Gallery Photo"
+                    : "Article"}
             </button>
           </div>
         </div>
@@ -433,16 +560,22 @@ const Dashboard = ({ token, setToken }) => {
                         ? currentId
                           ? "Edit Skill"
                           : "New Skill"
-                        : currentId
-                          ? "Edit Gallery Photo"
-                          : "New Gallery Photo"}
+                        : editingType === "article"
+                          ? currentId
+                            ? "Edit Article"
+                            : "New Article"
+                          : currentId
+                            ? "Edit Gallery Photo"
+                            : "New Gallery Photo"}
                   </h3>
                   <p className="text-sm text-slate-400 mt-1">
                     {editingType === "skill"
                       ? "Add a skill name and category. The category becomes a separate section on the site."
-                      : editingType === "gallery"
-                        ? "Add a title, category, and image URL for your gallery page."
-                        : "Create or update a portfolio project."}
+                      : editingType === "article"
+                        ? "Write full in-site articles and optionally keep Medium URL as source reference."
+                        : editingType === "gallery"
+                          ? "Add a title, category, and image URL for your gallery page."
+                          : "Create or update a portfolio project."}
                   </p>
                 </div>
                 <button
@@ -611,7 +744,7 @@ const Dashboard = ({ token, setToken }) => {
                       />
                     </div>
                   </>
-                ) : (
+                ) : editingType === "gallery" ? (
                   <>
                     <div>
                       <label className="block text-slate-400 mb-1">Title</label>
@@ -703,6 +836,201 @@ const Dashboard = ({ token, setToken }) => {
                       </div>
                     </div>
                   </>
+                ) : (
+                  <>
+                    <div>
+                      <label className="block text-slate-400 mb-1">Title</label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        required
+                        value={articleForm.title}
+                        onChange={(e) =>
+                          setArticleForm({
+                            ...articleForm,
+                            title: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Slug
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          placeholder="building-realtime-apps"
+                          value={articleForm.slug}
+                          onChange={(e) =>
+                            setArticleForm({
+                              ...articleForm,
+                              slug: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Category
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={articleForm.category}
+                          onChange={(e) =>
+                            setArticleForm({
+                              ...articleForm,
+                              category: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 mb-1">
+                        Excerpt
+                      </label>
+                      <textarea
+                        className="input-field h-20"
+                        required
+                        value={articleForm.excerpt}
+                        onChange={(e) =>
+                          setArticleForm({
+                            ...articleForm,
+                            excerpt: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 mb-1">
+                        Full Content
+                      </label>
+                      <textarea
+                        className="input-field h-56"
+                        required
+                        value={articleForm.content}
+                        onChange={(e) =>
+                          setArticleForm({
+                            ...articleForm,
+                            content: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Read Time
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={articleForm.readTime}
+                          onChange={(e) =>
+                            setArticleForm({
+                              ...articleForm,
+                              readTime: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Date
+                        </label>
+                        <input
+                          type="date"
+                          className="input-field"
+                          value={articleForm.date}
+                          onChange={(e) =>
+                            setArticleForm({
+                              ...articleForm,
+                              date: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Source
+                        </label>
+                        <select
+                          className="input-field"
+                          value={articleForm.source}
+                          onChange={(e) =>
+                            setArticleForm({
+                              ...articleForm,
+                              source: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="original">Original</option>
+                          <option value="medium">Medium</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 mb-1">Tags</label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        placeholder="Next.js, WebSockets, Realtime"
+                        value={articleForm.tags}
+                        onChange={(e) =>
+                          setArticleForm({
+                            ...articleForm,
+                            tags: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 mb-1">
+                        Medium URL (optional)
+                      </label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        value={articleForm.mediumUrl}
+                        onChange={(e) =>
+                          setArticleForm({
+                            ...articleForm,
+                            mediumUrl: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="article-featured"
+                        checked={articleForm.featured}
+                        onChange={(e) =>
+                          setArticleForm({
+                            ...articleForm,
+                            featured: e.target.checked,
+                          })
+                        }
+                        className="w-4 h-4 rounded border-slate-700 bg-slate-900 focus:ring-accent"
+                      />
+                      <label
+                        htmlFor="article-featured"
+                        className="text-slate-400"
+                      >
+                        Featured Article
+                      </label>
+                    </div>
+                  </>
                 )}
 
                 <button type="submit" className="w-full btn-primary mt-4">
@@ -714,9 +1042,13 @@ const Dashboard = ({ token, setToken }) => {
                       ? currentId
                         ? "Update Skill"
                         : "Create Skill"
-                      : currentId
-                        ? "Update Photo"
-                        : "Create Photo"}
+                      : editingType === "gallery"
+                        ? currentId
+                          ? "Update Photo"
+                          : "Create Photo"
+                        : currentId
+                          ? "Update Article"
+                          : "Create Article"}
                 </button>
               </form>
             </div>
@@ -833,7 +1165,7 @@ const Dashboard = ({ token, setToken }) => {
               </div>
             )}
           </div>
-        ) : (
+        ) : activeSection === "gallery" ? (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {galleryPhotos.map((photo) => (
               <div
@@ -879,6 +1211,53 @@ const Dashboard = ({ token, setToken }) => {
             {galleryPhotos.length === 0 && (
               <div className="rounded-2xl border border-white/10 bg-secondary/70 p-8 text-center text-slate-400 sm:col-span-2 xl:col-span-3">
                 No gallery photos yet. Add your first photo from the button
+                above.
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {articles.map((article) => (
+              <div
+                key={article._id}
+                className="rounded-2xl border border-white/10 bg-secondary/70 p-5"
+              >
+                <p className="text-xs uppercase tracking-[0.3em] text-accent">
+                  {article.category || "Writing"}
+                </p>
+                <h4 className="mt-2 text-white font-bold leading-6">
+                  {article.title}
+                </h4>
+                <p className="mt-2 text-slate-400 text-sm line-clamp-3">
+                  {article.excerpt}
+                </p>
+                <p className="mt-3 text-xs text-slate-500">
+                  {article.readTime || "-"} • {article.date || "-"}
+                </p>
+                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-500">
+                  Source: {article.source || "original"}
+                </p>
+
+                <div className="mt-4 flex items-center justify-end gap-2">
+                  <button
+                    onClick={() => openArticleForm(article)}
+                    className="p-2 hover:bg-slate-700 rounded text-accent"
+                  >
+                    <Edit size={16} />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteArticle(article._id)}
+                    className="p-2 hover:bg-slate-700 rounded text-red-500"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            {articles.length === 0 && (
+              <div className="rounded-2xl border border-white/10 bg-secondary/70 p-8 text-center text-slate-400 sm:col-span-2 xl:col-span-3">
+                No articles yet. Add your first full article from the button
                 above.
               </div>
             )}

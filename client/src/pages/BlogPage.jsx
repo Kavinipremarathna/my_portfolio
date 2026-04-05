@@ -1,99 +1,47 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion as Motion } from "framer-motion";
-import {
-  ArrowUpRight,
-  BookOpen,
-  Clock3,
-  ExternalLink,
-  Sparkles,
-} from "lucide-react";
+import { ArrowUpRight, BookOpen, Clock3, Sparkles } from "lucide-react";
+import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-
-const mediumProfileUrl = "https://medium.com/@kavinipremarathna";
-
-const posts = [
-  {
-    slug: "secure-auth-design-node-react",
-    title: "Designing Secure Auth Flows in React and Node.js",
-    excerpt:
-      "A practical guide to token lifecycle, refresh strategies, role-based authorization, and production-grade security patterns.",
-    category: "Backend",
-    readTime: "8 min read",
-    date: "Apr 02, 2026",
-    tags: ["JWT", "Auth", "Node.js", "Security"],
-    featured: true,
-  },
-  {
-    slug: "portfolio-performance-playbook",
-    title: "Portfolio Performance Playbook: Fast, Smooth, and SEO-Ready",
-    excerpt:
-      "How to tune Core Web Vitals with image optimization, route-level loading states, smart animation budgets, and bundle control.",
-    category: "Performance",
-    readTime: "7 min read",
-    date: "Mar 20, 2026",
-    tags: ["Lighthouse", "Vite", "UX"],
-  },
-  {
-    slug: "ui-motion-principles",
-    title: "UI Motion Principles That Make Interfaces Feel Premium",
-    excerpt:
-      "Meaningful transitions, stagger systems, and easing choices that improve clarity without overwhelming users.",
-    category: "Design",
-    readTime: "6 min read",
-    date: "Mar 08, 2026",
-    tags: ["Framer Motion", "Design Systems", "UX"],
-  },
-  {
-    slug: "scalable-gallery-architecture",
-    title: "From Static Gallery to Scalable Content System",
-    excerpt:
-      "How to evolve a gallery page into a maintainable admin-driven flow with categories, CRUD endpoints, and filtering UX.",
-    category: "Full-Stack",
-    readTime: "9 min read",
-    date: "Feb 26, 2026",
-    tags: ["React", "Express", "API Design"],
-  },
-  {
-    slug: "developer-photography-habits",
-    title: "Photography Habits That Improve a Developer’s Design Eye",
-    excerpt:
-      "Composition, contrast, and visual rhythm from nature photography that directly sharpen interface design decisions.",
-    category: "Photography",
-    readTime: "5 min read",
-    date: "Feb 11, 2026",
-    tags: ["Photography", "Creative Practice", "UI"],
-  },
-  {
-    slug: "clean-commit-strategy",
-    title: "A Clean Commit Strategy for Real-World Portfolio Projects",
-    excerpt:
-      "Organize changes into meaningful commits, avoid noisy history, and keep your repo review-friendly for recruiters and teams.",
-    category: "Engineering",
-    readTime: "4 min read",
-    date: "Jan 31, 2026",
-    tags: ["Git", "Workflow", "Code Review"],
-  },
-];
+import { API_URL } from "../config/api";
 
 const BlogPage = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("All");
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/articles`);
+        setPosts(Array.isArray(response.data) ? response.data : []);
+      } catch (err) {
+        console.error(err);
+        setPosts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void loadPosts();
+  }, []);
 
   const categories = useMemo(() => {
     const dynamic = Array.from(new Set(posts.map((post) => post.category)));
-    return ["All", ...dynamic];
-  }, []);
+    return ["All", ...dynamic.filter(Boolean)];
+  }, [posts]);
 
   const visiblePosts = useMemo(() => {
     if (activeFilter === "All") {
       return posts;
     }
     return posts.filter((post) => post.category === activeFilter);
-  }, [activeFilter]);
+  }, [activeFilter, posts]);
 
   const featuredPost = useMemo(
     () => posts.find((post) => post.featured) || posts[0],
-    [],
+    [posts],
   );
 
   return (
@@ -162,26 +110,27 @@ const BlogPage = () => {
                   Featured Post
                 </p>
                 <h2 className="mt-4 text-3xl md:text-4xl font-black text-white leading-tight">
-                  {featuredPost.title}
+                  {featuredPost?.title || "No featured article yet"}
                 </h2>
                 <p className="mt-5 text-slate-300 leading-8 text-lg">
-                  {featuredPost.excerpt}
+                  {featuredPost?.excerpt ||
+                    "Add your first full article from admin to populate this section."}
                 </p>
 
                 <div className="mt-7 flex flex-wrap items-center gap-4 text-sm text-slate-400">
                   <span className="inline-flex items-center gap-2">
                     <BookOpen size={15} className="text-accent" />
-                    {featuredPost.category}
+                    {featuredPost?.category || "Writing"}
                   </span>
                   <span className="inline-flex items-center gap-2">
                     <Clock3 size={15} className="text-accent" />
-                    {featuredPost.readTime}
+                    {featuredPost?.readTime || "-"}
                   </span>
-                  <span>{featuredPost.date}</span>
+                  <span>{featuredPost?.date || "-"}</span>
                 </div>
 
                 <div className="mt-7 flex flex-wrap gap-2">
-                  {featuredPost.tags.map((tag) => (
+                  {(featuredPost?.tags || []).map((tag) => (
                     <span
                       key={tag}
                       className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-200"
@@ -193,12 +142,10 @@ const BlogPage = () => {
 
                 <div className="mt-9 flex flex-wrap gap-3">
                   <a
-                    href={mediumProfileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={featuredPost ? `/blog/${featuredPost.slug}` : "/blog"}
                     className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-primary transition-transform hover:-translate-y-0.5"
                   >
-                    Read on Medium <ExternalLink size={15} />
+                    Read Full Article <ArrowUpRight size={15} />
                   </a>
                   <a
                     href="/contact"
@@ -217,28 +164,38 @@ const BlogPage = () => {
                 className="rounded-3xl border border-white/10 bg-secondary/70 p-7"
               >
                 <p className="text-xs uppercase tracking-[0.35em] text-accent">
-                  Medium
+                  Publishing
                 </p>
                 <h3 className="mt-3 text-2xl font-bold text-white leading-tight">
-                  Want the complete writing archive?
+                  Built for full in-site reading
                 </h3>
                 <p className="mt-4 text-slate-300 leading-7">
-                  Follow my Medium profile for deeper technical walkthroughs,
-                  extended case studies, and fresh posts.
+                  Articles are now rendered fully on this site. You can still
+                  publish to Medium from admin and keep references for each
+                  post.
                 </p>
 
-                <a
-                  href={mediumProfileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 inline-flex items-center gap-2 rounded-full border border-accent/35 bg-accent/10 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/20"
-                >
-                  Open Medium Profile <ExternalLink size={14} />
-                </a>
+                <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300 leading-7">
+                  Tip: In admin, create articles with source set to
+                  <span className="text-accent"> medium </span>
+                  and optionally include a Medium URL for reference.
+                </div>
               </Motion.aside>
             </div>
 
             <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {loading && (
+                <div className="rounded-3xl border border-white/10 bg-secondary/60 p-6 text-slate-300 md:col-span-2 xl:col-span-3">
+                  Loading articles...
+                </div>
+              )}
+
+              {!loading && visiblePosts.length === 0 && (
+                <div className="rounded-3xl border border-white/10 bg-secondary/60 p-6 text-slate-300 md:col-span-2 xl:col-span-3">
+                  No articles yet. Add one from the admin panel.
+                </div>
+              )}
+
               {visiblePosts.map((post, index) => (
                 <Motion.article
                   key={post.slug}
@@ -278,9 +235,7 @@ const BlogPage = () => {
                   <div className="mt-6 flex items-center justify-between">
                     <span className="text-xs text-slate-400">{post.date}</span>
                     <a
-                      href={mediumProfileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href={`/blog/${post.slug}`}
                       className="inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline"
                     >
                       Read article <ArrowUpRight size={14} />
