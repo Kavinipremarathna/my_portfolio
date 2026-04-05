@@ -56,11 +56,6 @@ const Navbar = () => {
           href: "https://medium.com/@kavinipremarathna",
           external: true,
         },
-        {
-          name: "Resume",
-          href: "/resume.pdf",
-          download: true,
-        },
       ]
     : [
         { name: "Home", href: "/#home" },
@@ -74,11 +69,6 @@ const Navbar = () => {
           name: "Blogs",
           href: "https://medium.com/@kavinipremarathna",
           external: true,
-        },
-        {
-          name: "Resume",
-          href: "/resume.pdf",
-          download: true,
         },
       ];
 
