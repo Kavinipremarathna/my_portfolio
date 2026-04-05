@@ -10,6 +10,7 @@ import About from "./pages/About";
 import SkillsPage from "./pages/SkillsPage";
 import Admin from "./pages/Admin";
 import Gallery from "./pages/Gallery";
+import ProjectsPage from "./pages/ProjectsPage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/skills" element={<SkillsPage />} />
+        <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

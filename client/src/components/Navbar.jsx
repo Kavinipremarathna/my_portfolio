@@ -48,7 +48,7 @@ const Navbar = () => {
         { name: "About", href: "/about" },
         { name: "Gallery", href: "/gallery" },
         { name: "Skills", href: "/skills" },
-        { name: "Projects", href: "/#projects" },
+        { name: "Projects", href: "/projects" },
         { name: "Experience", href: "/#experience" },
         { name: "Contact", href: "/#contact" },
         {
@@ -62,7 +62,7 @@ const Navbar = () => {
         { name: "About", href: "/about" },
         { name: "Gallery", href: "/gallery" },
         { name: "Skills", href: "/skills" },
-        { name: "Projects", href: "/#projects" },
+        { name: "Projects", href: "/projects" },
         { name: "Experience", href: "/#experience" },
         { name: "Contact", href: "/#contact" },
         {
