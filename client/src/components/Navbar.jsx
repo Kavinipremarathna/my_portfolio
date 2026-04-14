@@ -49,7 +49,6 @@ const Navbar = () => {
         { name: "Gallery", href: "/gallery" },
         { name: "Skills", href: "/skills" },
         { name: "Projects", href: "/projects" },
-        { name: "Experience", href: "/experience" },
         { name: "Contact", href: "/contact" },
         { name: "Blogs", href: "/blog" },
         {
@@ -64,7 +63,6 @@ const Navbar = () => {
         { name: "Gallery", href: "/gallery" },
         { name: "Skills", href: "/skills" },
         { name: "Projects", href: "/projects" },
-        { name: "Experience", href: "/experience" },
         { name: "Contact", href: "/contact" },
         { name: "Blogs", href: "/blog" },
         {

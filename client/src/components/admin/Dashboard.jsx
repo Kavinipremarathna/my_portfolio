@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Plus, Trash2, Edit, LogOut, X, ChevronUp, ChevronDown } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Edit,
+  LogOut,
+  X,
+  ChevronUp,
+  ChevronDown,
+} from "lucide-react";
 import { API_URL } from "../../config/api";
 
 const emptyProjectForm = {
@@ -2002,61 +2010,63 @@ const Dashboard = ({ token, setToken }) => {
                 </div>
 
                 <div className="space-y-4">
-                  {(groupedExperiences[sectionKey] || []).map((item, index, list) => (
-                    <div
-                      key={item._id}
-                      className="rounded-xl border border-white/10 bg-primary/50 p-4"
-                    >
-                      <div className="flex flex-wrap items-start justify-between gap-4">
-                        <div>
-                          <p className="text-accent text-sm font-medium">
-                            {item.year}
-                          </p>
-                          <h4 className="mt-1 text-white font-bold text-lg">
-                            {item.title}
-                          </h4>
-                          <p className="text-slate-400 text-sm mt-1">
-                            {item.organization}
-                          </p>
+                  {(groupedExperiences[sectionKey] || []).map(
+                    (item, index, list) => (
+                      <div
+                        key={item._id}
+                        className="rounded-xl border border-white/10 bg-primary/50 p-4"
+                      >
+                        <div className="flex flex-wrap items-start justify-between gap-4">
+                          <div>
+                            <p className="text-accent text-sm font-medium">
+                              {item.year}
+                            </p>
+                            <h4 className="mt-1 text-white font-bold text-lg">
+                              {item.title}
+                            </h4>
+                            <p className="text-slate-400 text-sm mt-1">
+                              {item.organization}
+                            </p>
+                          </div>
+                          <div className="flex gap-1 flex-shrink-0">
+                            <button
+                              onClick={() =>
+                                handleReorderExperience(item._id, "up")
+                              }
+                              disabled={index === 0}
+                              className="p-2 hover:bg-slate-700 rounded text-slate-300 disabled:opacity-40 disabled:hover:bg-transparent"
+                            >
+                              <ChevronUp size={16} />
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleReorderExperience(item._id, "down")
+                              }
+                              disabled={index === list.length - 1}
+                              className="p-2 hover:bg-slate-700 rounded text-slate-300 disabled:opacity-40 disabled:hover:bg-transparent"
+                            >
+                              <ChevronDown size={16} />
+                            </button>
+                            <button
+                              onClick={() => openExperienceForm(item)}
+                              className="p-2 hover:bg-slate-700 rounded text-accent"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteExperience(item._id)}
+                              className="p-2 hover:bg-slate-700 rounded text-red-500"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
                         </div>
-                        <div className="flex gap-1 flex-shrink-0">
-                          <button
-                            onClick={() =>
-                              handleReorderExperience(item._id, "up")
-                            }
-                            disabled={index === 0}
-                            className="p-2 hover:bg-slate-700 rounded text-slate-300 disabled:opacity-40 disabled:hover:bg-transparent"
-                          >
-                            <ChevronUp size={16} />
-                          </button>
-                          <button
-                            onClick={() =>
-                              handleReorderExperience(item._id, "down")
-                            }
-                            disabled={index === list.length - 1}
-                            className="p-2 hover:bg-slate-700 rounded text-slate-300 disabled:opacity-40 disabled:hover:bg-transparent"
-                          >
-                            <ChevronDown size={16} />
-                          </button>
-                          <button
-                            onClick={() => openExperienceForm(item)}
-                            className="p-2 hover:bg-slate-700 rounded text-accent"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteExperience(item._id)}
-                            className="p-2 hover:bg-slate-700 rounded text-red-500"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
+                        <p className="mt-3 text-slate-300 text-sm leading-7">
+                          {item.description}
+                        </p>
                       </div>
-                      <p className="mt-3 text-slate-300 text-sm leading-7">
-                        {item.description}
-                      </p>
-                    </div>
-                  ))}
+                    ),
+                  )}
 
                   {(groupedExperiences[sectionKey] || []).length === 0 && (
                     <div className="rounded-xl border border-dashed border-white/10 bg-primary/30 p-5 text-sm text-slate-400">

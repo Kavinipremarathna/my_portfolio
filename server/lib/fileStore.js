@@ -414,7 +414,9 @@ function deleteArticle(id) {
 }
 
 function listExperiences() {
-  const normalized = normalizeAndOrderExperiences(readJson(experiencesFile, []));
+  const normalized = normalizeAndOrderExperiences(
+    readJson(experiencesFile, []),
+  );
   return sortExperiences(normalized);
 }
 
@@ -423,8 +425,11 @@ function getExperienceById(id) {
 }
 
 function createExperience(experience) {
-  const experiences = normalizeAndOrderExperiences(readJson(experiencesFile, []));
-  const section = experience.section === "education" ? "education" : "experience";
+  const experiences = normalizeAndOrderExperiences(
+    readJson(experiencesFile, []),
+  );
+  const section =
+    experience.section === "education" ? "education" : "experience";
   const nextOrder =
     experiences
       .filter((item) => item.section === section)
@@ -442,7 +447,9 @@ function createExperience(experience) {
 }
 
 function updateExperience(id, updates) {
-  const experiences = normalizeAndOrderExperiences(readJson(experiencesFile, []));
+  const experiences = normalizeAndOrderExperiences(
+    readJson(experiencesFile, []),
+  );
   const index = experiences.findIndex((experience) => experience._id === id);
 
   if (index === -1) {
@@ -478,7 +485,9 @@ function updateExperience(id, updates) {
 }
 
 function deleteExperience(id) {
-  const experiences = normalizeAndOrderExperiences(readJson(experiencesFile, []));
+  const experiences = normalizeAndOrderExperiences(
+    readJson(experiencesFile, []),
+  );
   const filteredExperiences = experiences.filter(
     (experience) => experience._id !== id,
   );
@@ -493,7 +502,9 @@ function deleteExperience(id) {
 }
 
 function reorderExperience(id, direction) {
-  const experiences = normalizeAndOrderExperiences(readJson(experiencesFile, []));
+  const experiences = normalizeAndOrderExperiences(
+    readJson(experiencesFile, []),
+  );
   const current = experiences.find((experience) => experience._id === id);
 
   if (!current) {
@@ -503,7 +514,9 @@ function reorderExperience(id, direction) {
   const sectionItems = experiences
     .filter((experience) => experience.section === current.section)
     .sort((left, right) => left.order - right.order);
-  const currentIndex = sectionItems.findIndex((experience) => experience._id === id);
+  const currentIndex = sectionItems.findIndex(
+    (experience) => experience._id === id,
+  );
   const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
 
   if (targetIndex < 0 || targetIndex >= sectionItems.length) {

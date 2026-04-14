@@ -11,7 +11,6 @@ import SkillsPage from "./pages/SkillsPage";
 import Admin from "./pages/Admin";
 import Gallery from "./pages/Gallery";
 import ProjectsPage from "./pages/ProjectsPage";
-import ExperiencePage from "./pages/ExperiencePage";
 import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/BlogPage";
 import BlogArticlePage from "./pages/BlogArticlePage";
@@ -25,7 +24,6 @@ function App() {
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/skills" element={<SkillsPage />} />
         <Route path="/projects" element={<ProjectsPage />} />
-        <Route path="/experience" element={<ExperiencePage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/:slug" element={<BlogArticlePage />} />

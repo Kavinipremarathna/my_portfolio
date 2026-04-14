@@ -46,11 +46,14 @@ router.post("/", auth, async (req, res) => {
   }
 
   try {
-    const normalizedSection = section === "education" ? "education" : "experience";
+    const normalizedSection =
+      section === "education" ? "education" : "experience";
     let nextOrder = 1;
 
     if (useMongo()) {
-      const maxOrderEntry = await Experience.findOne({ section: normalizedSection })
+      const maxOrderEntry = await Experience.findOne({
+        section: normalizedSection,
+      })
         .sort({ order: -1, createdAt: -1 })
         .lean();
       nextOrder = (maxOrderEntry?.order || 0) + 1;
@@ -113,7 +116,9 @@ router.put("/:id", auth, async (req, res) => {
     }
 
     if (normalizedSection !== experience.section) {
-      const maxOrderEntry = await Experience.findOne({ section: normalizedSection })
+      const maxOrderEntry = await Experience.findOne({
+        section: normalizedSection,
+      })
         .sort({ order: -1, createdAt: -1 })
         .lean();
       updates.order = (maxOrderEntry?.order || 0) + 1;
@@ -153,14 +158,17 @@ router.post("/reorder", auth, async (req, res) => {
       return res.status(404).json({ msg: "Experience not found" });
     }
 
-    const sectionItems = await Experience.find({ section: current.section }).sort({
+    const sectionItems = await Experience.find({
+      section: current.section,
+    }).sort({
       order: 1,
       createdAt: 1,
     });
     const currentIndex = sectionItems.findIndex(
       (item) => String(item._id) === String(id),
     );
-    const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+    const targetIndex =
+      direction === "up" ? currentIndex - 1 : currentIndex + 1;
 
     if (targetIndex >= 0 && targetIndex < sectionItems.length) {
       const [moved] = sectionItems.splice(currentIndex, 1);

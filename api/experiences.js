@@ -204,7 +204,8 @@ export default function handler(req, res) {
     const currentIndex = sectionItems.findIndex(
       (item) => String(item._id) === String(reorderId),
     );
-    const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+    const targetIndex =
+      direction === "up" ? currentIndex - 1 : currentIndex + 1;
 
     if (targetIndex >= 0 && targetIndex < sectionItems.length) {
       const [moved] = sectionItems.splice(currentIndex, 1);
@@ -252,7 +253,8 @@ export default function handler(req, res) {
     }
 
     const existing = normalizeAndOrderExperiences(readExperiences());
-    const normalizedSection = section === "education" ? "education" : "experience";
+    const normalizedSection =
+      section === "education" ? "education" : "experience";
     const nextOrder =
       existing
         .filter((item) => item.section === normalizedSection)
@@ -284,7 +286,9 @@ export default function handler(req, res) {
 
     const updates = req.body || {};
     const experiences = normalizeAndOrderExperiences(readExperiences());
-    const index = experiences.findIndex((item) => String(item._id) === String(id));
+    const index = experiences.findIndex(
+      (item) => String(item._id) === String(id),
+    );
     if (index === -1) {
       return res.status(404).json({ msg: "Experience not found" });
     }
@@ -299,7 +303,8 @@ export default function handler(req, res) {
     const nextOrder =
       normalizedSection === current.section
         ? current.order
-        : experiences.filter((item) => item.section === normalizedSection).length + 1;
+        : experiences.filter((item) => item.section === normalizedSection)
+            .length + 1;
 
     const updated = normalizeExperience({
       ...current,
@@ -312,7 +317,9 @@ export default function handler(req, res) {
 
     try {
       experiences[index] = updated;
-      writeExperiences(sortExperiences(normalizeAndOrderExperiences(experiences)));
+      writeExperiences(
+        sortExperiences(normalizeAndOrderExperiences(experiences)),
+      );
       return res.status(200).json(updated);
     } catch {
       return res.status(500).json({
@@ -326,7 +333,9 @@ export default function handler(req, res) {
     if (!id) return res.status(400).json({ msg: "Experience id is required" });
 
     const experiences = normalizeAndOrderExperiences(readExperiences());
-    const filtered = experiences.filter((item) => String(item._id) !== String(id));
+    const filtered = experiences.filter(
+      (item) => String(item._id) !== String(id),
+    );
     if (filtered.length === experiences.length) {
       return res.status(404).json({ msg: "Experience not found" });
     }

@@ -60,28 +60,24 @@ const Experience = () => {
     void loadExperiences();
   }, []);
 
-  const groupedExperiences = useMemo(
-    () => {
-      const groups = experiences.reduce((accumulator, item) => {
-        const section =
-          item.section === "education" ? "education" : "experience";
-        if (!accumulator[section]) {
-          accumulator[section] = [];
-        }
-        accumulator[section].push(item);
-        return accumulator;
-      }, {});
+  const groupedExperiences = useMemo(() => {
+    const groups = experiences.reduce((accumulator, item) => {
+      const section = item.section === "education" ? "education" : "experience";
+      if (!accumulator[section]) {
+        accumulator[section] = [];
+      }
+      accumulator[section].push(item);
+      return accumulator;
+    }, {});
 
-      Object.keys(groups).forEach((sectionKey) => {
-        groups[sectionKey].sort(
-          (left, right) => (left.order || 0) - (right.order || 0),
-        );
-      });
+    Object.keys(groups).forEach((sectionKey) => {
+      groups[sectionKey].sort(
+        (left, right) => (left.order || 0) - (right.order || 0),
+      );
+    });
 
-      return groups;
-    },
-    [experiences],
-  );
+    return groups;
+  }, [experiences]);
 
   const sections = [
     {
