@@ -35,6 +35,7 @@ const skillRoutes = require("./routes/skillRoutes");
 const galleryRoutes = require("./routes/galleryRoutes");
 const articleRoutes = require("./routes/articleRoutes");
 const heroRoutes = require("./routes/heroRoutes");
+const experienceRoutes = require("./routes/experienceRoutes");
 
 app.use("/api/projects", projectRoutes);
 app.use("/api/auth", authRoutes);
@@ -42,6 +43,7 @@ app.use("/api/skills", skillRoutes);
 app.use("/api/gallery", galleryRoutes);
 app.use("/api/articles", articleRoutes);
 app.use("/api/hero", heroRoutes);
+app.use("/api/experiences", experienceRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

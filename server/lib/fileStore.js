@@ -9,6 +9,7 @@ const skillsFile = path.join(dataDir, "skills.json");
 const galleryFile = path.join(dataDir, "gallery.json");
 const articlesFile = path.join(dataDir, "articles.json");
 const heroFile = path.join(dataDir, "hero.json");
+const experiencesFile = path.join(dataDir, "experiences.json");
 
 const defaultHeroConfig = {
   badgeText: "Portfolio / Full-Stack Developer",
@@ -132,6 +133,18 @@ function normalizeHeroConfig(hero) {
       ...defaultHeroConfig.social,
       ...(next.social && typeof next.social === "object" ? next.social : {}),
     },
+  };
+}
+
+function normalizeExperience(experience) {
+  return {
+    _id: experience._id || crypto.randomUUID(),
+    section: experience.section === "education" ? "education" : "experience",
+    year: String(experience.year || "").trim(),
+    title: String(experience.title || "").trim(),
+    organization: String(experience.organization || "").trim(),
+    description: String(experience.description || "").trim(),
+    createdAt: experience.createdAt || new Date().toISOString(),
   };
 }
 
@@ -352,6 +365,60 @@ function deleteArticle(id) {
   return true;
 }
 
+function listExperiences() {
+  return readJson(experiencesFile, [])
+    .map(normalizeExperience)
+    .sort(
+      (left, right) => new Date(right.createdAt) - new Date(left.createdAt),
+    );
+}
+
+function getExperienceById(id) {
+  return listExperiences().find((experience) => experience._id === id) || null;
+}
+
+function createExperience(experience) {
+  const experiences = listExperiences();
+  const newExperience = normalizeExperience(experience);
+  experiences.unshift(newExperience);
+  writeJson(experiencesFile, experiences);
+  return newExperience;
+}
+
+function updateExperience(id, updates) {
+  const experiences = listExperiences();
+  const index = experiences.findIndex((experience) => experience._id === id);
+
+  if (index === -1) {
+    return null;
+  }
+
+  const updatedExperience = normalizeExperience({
+    ...experiences[index],
+    ...updates,
+    _id: id,
+    createdAt: experiences[index].createdAt,
+  });
+
+  experiences[index] = updatedExperience;
+  writeJson(experiencesFile, experiences);
+  return updatedExperience;
+}
+
+function deleteExperience(id) {
+  const experiences = listExperiences();
+  const filteredExperiences = experiences.filter(
+    (experience) => experience._id !== id,
+  );
+
+  if (filteredExperiences.length === experiences.length) {
+    return false;
+  }
+
+  writeJson(experiencesFile, filteredExperiences);
+  return true;
+}
+
 function getHeroConfig() {
   return normalizeHeroConfig(readJson(heroFile, defaultHeroConfig));
 }
@@ -425,6 +492,11 @@ module.exports = {
   createArticle,
   updateArticle,
   deleteArticle,
+  listExperiences,
+  getExperienceById,
+  createExperience,
+  updateExperience,
+  deleteExperience,
   getHeroConfig,
   updateHeroConfig,
   listUsers,

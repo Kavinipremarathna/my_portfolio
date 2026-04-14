@@ -20,6 +20,9 @@
     },
     "api/hero.js": {
       "includeFiles": "server/data/hero.json"
+    },
+    "api/experiences.js": {
+      "includeFiles": "server/data/experiences.json"
     }
   },
   "outputDirectory": "client/dist",
@@ -47,6 +50,10 @@
     {
       "source": "/api/hero/(.*)",
       "destination": "/api/hero?route=$1"
+    },
+    {
+      "source": "/api/experiences/(.*)",
+      "destination": "/api/experiences?route=$1"
     },
     {
       "source": "/(.*)",

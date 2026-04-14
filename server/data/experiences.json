@@ -1,0 +1,38 @@
+[
+  {
+    "_id": "experience-1",
+    "section": "education",
+    "year": "2022 - Present",
+    "title": "BSc (Hons) in Software Engineering",
+    "organization": "University Name (e.g., SLIIT, IIT)",
+    "description": "Currently pursuing undergraduate degree. Focusing on Full Stack Development, Data Structures, and Algorithms.",
+    "createdAt": "2026-04-10T00:00:00.000Z"
+  },
+  {
+    "_id": "experience-2",
+    "section": "education",
+    "year": "2020 - 2022",
+    "title": "G.C.E Advanced Level",
+    "organization": "School Name",
+    "description": "Physical Science Stream. Achieved high distinction.",
+    "createdAt": "2026-04-10T00:00:01.000Z"
+  },
+  {
+    "_id": "experience-3",
+    "section": "experience",
+    "year": "2024",
+    "title": "Full Stack Developer Intern",
+    "organization": "Tech Company Name",
+    "description": "Assisted in building RESTful APIs using Node.js and Express. Developed responsive frontend UI with React.",
+    "createdAt": "2026-04-10T00:00:02.000Z"
+  },
+  {
+    "_id": "experience-4",
+    "section": "experience",
+    "year": "2023",
+    "title": "Freelance Web Developer",
+    "organization": "Self-Employed",
+    "description": "Developed custom websites for small businesses using HTML, CSS, and JavaScript. Delivered high-quality, responsive designs.",
+    "createdAt": "2026-04-10T00:00:03.000Z"
+  }
+]

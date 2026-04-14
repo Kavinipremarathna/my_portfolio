@@ -39,6 +39,14 @@ const emptyArticleForm = {
   mediumUrl: "",
 };
 
+const emptyExperienceForm = {
+  section: "experience",
+  year: "",
+  title: "",
+  organization: "",
+  description: "",
+};
+
 const emptyHeroForm = {
   badgeText: "Portfolio / Full-Stack Developer",
   greeting: "Hello, I am",
@@ -76,6 +84,7 @@ const Dashboard = ({ token, setToken }) => {
   const [skills, setSkills] = useState([]);
   const [galleryPhotos, setGalleryPhotos] = useState([]);
   const [articles, setArticles] = useState([]);
+  const [experiences, setExperiences] = useState([]);
   const [heroConfig, setHeroConfig] = useState(null);
   const [activeSection, setActiveSection] = useState("projects");
   const [editingType, setEditingType] = useState(null);
@@ -85,6 +94,7 @@ const Dashboard = ({ token, setToken }) => {
   const [skillForm, setSkillForm] = useState(emptySkillForm);
   const [galleryForm, setGalleryForm] = useState(emptyGalleryForm);
   const [articleForm, setArticleForm] = useState(emptyArticleForm);
+  const [experienceForm, setExperienceForm] = useState(emptyExperienceForm);
   const [heroForm, setHeroForm] = useState(emptyHeroForm);
 
   useEffect(() => {
@@ -95,12 +105,14 @@ const Dashboard = ({ token, setToken }) => {
           skillsResponse,
           galleryResponse,
           articlesResponse,
+          experiencesResponse,
           heroResponse,
         ] = await Promise.all([
           axios.get(`${API_URL}/api/projects`),
           axios.get(`${API_URL}/api/skills`),
           axios.get(`${API_URL}/api/gallery`),
           axios.get(`${API_URL}/api/articles`),
+          axios.get(`${API_URL}/api/experiences`),
           axios.get(`${API_URL}/api/hero`),
         ]);
 
@@ -115,6 +127,11 @@ const Dashboard = ({ token, setToken }) => {
         );
         setArticles(
           Array.isArray(articlesResponse.data) ? articlesResponse.data : [],
+        );
+        setExperiences(
+          Array.isArray(experiencesResponse.data)
+            ? experiencesResponse.data
+            : [],
         );
         const heroData =
           heroResponse.data && typeof heroResponse.data === "object"
@@ -197,6 +214,15 @@ const Dashboard = ({ token, setToken }) => {
     }
   };
 
+  const refreshExperiences = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/experiences`);
+      setExperiences(Array.isArray(response.data) ? response.data : []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     setToken(null);
@@ -207,6 +233,7 @@ const Dashboard = ({ token, setToken }) => {
     setSkillForm(emptySkillForm);
     setGalleryForm(emptyGalleryForm);
     setArticleForm(emptyArticleForm);
+    setExperienceForm(emptyExperienceForm);
     setHeroForm(emptyHeroForm);
     setEditingType(null);
     setCurrentId(null);
@@ -299,6 +326,28 @@ const Dashboard = ({ token, setToken }) => {
     }
 
     setEditingType("article");
+    setShowForm(true);
+  };
+
+  const openExperienceForm = (experience = null, section = "experience") => {
+    if (experience) {
+      setExperienceForm({
+        section: experience.section || "experience",
+        year: experience.year || "",
+        title: experience.title || "",
+        organization: experience.organization || "",
+        description: experience.description || "",
+      });
+      setCurrentId(experience._id);
+    } else {
+      setExperienceForm({
+        ...emptyExperienceForm,
+        section,
+      });
+      setCurrentId(null);
+    }
+
+    setEditingType("experience");
     setShowForm(true);
   };
 
@@ -414,6 +463,32 @@ const Dashboard = ({ token, setToken }) => {
         refreshArticles();
       }
 
+      if (editingType === "experience") {
+        const experienceData = {
+          section: experienceForm.section,
+          year: experienceForm.year.trim(),
+          title: experienceForm.title.trim(),
+          organization: experienceForm.organization.trim(),
+          description: experienceForm.description.trim(),
+        };
+
+        if (currentId) {
+          await axios.put(
+            `${API_URL}/api/experiences/${currentId}`,
+            experienceData,
+            config,
+          );
+        } else {
+          await axios.post(
+            `${API_URL}/api/experiences`,
+            experienceData,
+            config,
+          );
+        }
+
+        refreshExperiences();
+      }
+
       if (editingType === "hero") {
         const roles = String(heroForm.roles)
           .split(",")
@@ -527,12 +602,35 @@ const Dashboard = ({ token, setToken }) => {
     }
   };
 
+  const handleDeleteExperience = async (id) => {
+    if (!window.confirm("Delete this experience entry?")) return;
+
+    try {
+      await axios.delete(`${API_URL}/api/experiences/${id}`, {
+        headers: { "x-auth-token": token },
+      });
+      refreshExperiences();
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting experience entry");
+    }
+  };
+
   const groupedSkills = skills.reduce((groups, skill) => {
     const category = skill.category || "Other";
     if (!groups[category]) {
       groups[category] = [];
     }
     groups[category].push(skill);
+    return groups;
+  }, {});
+
+  const groupedExperiences = experiences.reduce((groups, item) => {
+    const section = item.section === "education" ? "education" : "experience";
+    if (!groups[section]) {
+      groups[section] = [];
+    }
+    groups[section].push(item);
     return groups;
   }, {});
 
@@ -545,7 +643,9 @@ const Dashboard = ({ token, setToken }) => {
           ? "Gallery"
           : activeSection === "articles"
             ? "Articles"
-            : "Hero";
+            : activeSection === "experience"
+              ? "Experience"
+              : "Hero";
   const sectionCount =
     activeSection === "projects"
       ? projects.length
@@ -555,9 +655,11 @@ const Dashboard = ({ token, setToken }) => {
           ? galleryPhotos.length
           : activeSection === "articles"
             ? articles.length
-            : heroConfig
-              ? 1
-              : 0;
+            : activeSection === "experience"
+              ? experiences.length
+              : heroConfig
+                ? 1
+                : 0;
 
   return (
     <div className="min-h-screen bg-primary">
@@ -631,6 +733,17 @@ const Dashboard = ({ token, setToken }) => {
             </button>
             <button
               type="button"
+              onClick={() => setActiveSection("experience")}
+              className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${
+                activeSection === "experience"
+                  ? "bg-accent text-primary"
+                  : "text-slate-300 hover:text-white"
+              }`}
+            >
+              Experience
+            </button>
+            <button
+              type="button"
               onClick={() => setActiveSection("hero")}
               className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${
                 activeSection === "hero"
@@ -658,6 +771,8 @@ const Dashboard = ({ token, setToken }) => {
                   openGalleryForm();
                 } else if (activeSection === "articles") {
                   openArticleForm();
+                } else if (activeSection === "experience") {
+                  openExperienceForm();
                 } else {
                   openHeroForm();
                 }
@@ -673,7 +788,9 @@ const Dashboard = ({ token, setToken }) => {
                     ? "Gallery Photo"
                     : activeSection === "articles"
                       ? "Article"
-                      : "Hero Content"}
+                      : activeSection === "experience"
+                        ? "Experience Entry"
+                        : "Hero Content"}
             </button>
           </div>
         </div>
@@ -696,22 +813,28 @@ const Dashboard = ({ token, setToken }) => {
                           ? currentId
                             ? "Edit Article"
                             : "New Article"
-                          : editingType === "hero"
-                            ? "Edit Hero"
-                            : currentId
-                              ? "Edit Gallery Photo"
-                              : "New Gallery Photo"}
+                          : editingType === "experience"
+                            ? currentId
+                              ? "Edit Experience"
+                              : "New Experience"
+                            : editingType === "hero"
+                              ? "Edit Hero"
+                              : currentId
+                                ? "Edit Gallery Photo"
+                                : "New Gallery Photo"}
                   </h3>
                   <p className="text-sm text-slate-400 mt-1">
                     {editingType === "skill"
                       ? "Add a skill name and category. The category becomes a separate section on the site."
                       : editingType === "article"
                         ? "Write full in-site articles and optionally keep Medium URL as source reference."
-                        : editingType === "hero"
-                          ? "Control hero headline, roles, CTAs, profile links, and highlighted stats from admin."
-                          : editingType === "gallery"
-                            ? "Add a title, category, and image URL for your gallery page."
-                            : "Create or update a portfolio project."}
+                        : editingType === "experience"
+                          ? "Add or update work experience and education entries shown on the experience page."
+                          : editingType === "hero"
+                            ? "Control hero headline, roles, CTAs, profile links, and highlighted stats from admin."
+                            : editingType === "gallery"
+                              ? "Add a title, category, and image URL for your gallery page."
+                              : "Create or update a portfolio project."}
                   </p>
                 </div>
                 <button
@@ -1167,6 +1290,94 @@ const Dashboard = ({ token, setToken }) => {
                       </label>
                     </div>
                   </>
+                ) : editingType === "experience" ? (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Section
+                        </label>
+                        <select
+                          className="input-field"
+                          value={experienceForm.section}
+                          onChange={(e) =>
+                            setExperienceForm({
+                              ...experienceForm,
+                              section: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="experience">Experience</option>
+                          <option value="education">Education</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Year / Range
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          placeholder="2024 or 2022 - Present"
+                          value={experienceForm.year}
+                          onChange={(e) =>
+                            setExperienceForm({
+                              ...experienceForm,
+                              year: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 mb-1">Title</label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        value={experienceForm.title}
+                        onChange={(e) =>
+                          setExperienceForm({
+                            ...experienceForm,
+                            title: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 mb-1">
+                        Company / Institution
+                      </label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        value={experienceForm.organization}
+                        onChange={(e) =>
+                          setExperienceForm({
+                            ...experienceForm,
+                            organization: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 mb-1">
+                        Description
+                      </label>
+                      <textarea
+                        className="input-field h-28"
+                        value={experienceForm.description}
+                        onChange={(e) =>
+                          setExperienceForm({
+                            ...experienceForm,
+                            description: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </>
                 ) : (
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1526,7 +1737,11 @@ const Dashboard = ({ token, setToken }) => {
                           ? currentId
                             ? "Update Article"
                             : "Create Article"
-                          : "Save Hero Settings"}
+                          : editingType === "experience"
+                            ? currentId
+                              ? "Update Entry"
+                              : "Create Entry"
+                            : "Save Hero Settings"}
                 </button>
               </form>
             </div>
@@ -1739,6 +1954,80 @@ const Dashboard = ({ token, setToken }) => {
                 above.
               </div>
             )}
+          </div>
+        ) : activeSection === "experience" ? (
+          <div className="grid gap-8 lg:grid-cols-2">
+            {[
+              ["experience", "Experience"],
+              ["education", "Education"],
+            ].map(([sectionKey, label]) => (
+              <div
+                key={sectionKey}
+                className="rounded-2xl border border-white/10 bg-secondary/70 p-5 md:p-6"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+                  <div>
+                    <h3 className="text-white text-xl font-bold">{label}</h3>
+                    <p className="text-slate-400 text-sm">
+                      {(groupedExperiences[sectionKey] || []).length} entries
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => openExperienceForm(null, sectionKey)}
+                    className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/20"
+                  >
+                    <Plus size={16} /> Add Entry
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {(groupedExperiences[sectionKey] || []).map((item) => (
+                    <div
+                      key={item._id}
+                      className="rounded-xl border border-white/10 bg-primary/50 p-4"
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div>
+                          <p className="text-accent text-sm font-medium">
+                            {item.year}
+                          </p>
+                          <h4 className="mt-1 text-white font-bold text-lg">
+                            {item.title}
+                          </h4>
+                          <p className="text-slate-400 text-sm mt-1">
+                            {item.organization}
+                          </p>
+                        </div>
+                        <div className="flex gap-1 flex-shrink-0">
+                          <button
+                            onClick={() => openExperienceForm(item)}
+                            className="p-2 hover:bg-slate-700 rounded text-accent"
+                          >
+                            <Edit size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteExperience(item._id)}
+                            className="p-2 hover:bg-slate-700 rounded text-red-500"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                      <p className="mt-3 text-slate-300 text-sm leading-7">
+                        {item.description}
+                      </p>
+                    </div>
+                  ))}
+
+                  {(groupedExperiences[sectionKey] || []).length === 0 && (
+                    <div className="rounded-xl border border-dashed border-white/10 bg-primary/30 p-5 text-sm text-slate-400">
+                      No {label.toLowerCase()} entries yet. Add the first one.
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="rounded-2xl border border-white/10 bg-secondary/70 p-6 md:p-8">
