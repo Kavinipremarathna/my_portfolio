@@ -20,7 +20,7 @@ npm install
 npm run dev
 ```
 
-_This command now automatically frees ports 5173 and 5000 before starting._
+_This command automatically frees ports 5173 and 5000 before starting._
 
 ### Run On Different Ports (PowerShell)
 
@@ -34,34 +34,34 @@ npm run dev
 
 _Frontend: http://localhost:5174, Backend: http://localhost:5001_
 
-### 1. Start the Backend Server
+### Start Individually
+
+Backend:
 
 ```bash
 cd server
 npm start
 ```
 
-_Runs on http://localhost:5000_
-
-### 2. Start the Frontend Client
+Frontend:
 
 ```bash
 cd client
 npm run dev
 ```
 
-_Runs on http://localhost:5173_
-
 ## Setup Admin
 
-To create the Initial Admin Account:
+To create the initial admin account:
 
-1. Ensure Server is running and MongoDB is connected.
+1. Ensure the server is running.
 2. Send a POST request to `http://localhost:5000/api/auth/setup` with JSON:
-   ```json
-   {
-     "username": "admin",
-     "password": "yourpassword"
-   }
-   ```
-3. Visit `http://localhost:5173/admin` to login.
+
+```json
+{
+  "username": "admin",
+  "password": "yourpassword"
+}
+```
+
+3. Visit `http://localhost:5173/admin` to log in.
