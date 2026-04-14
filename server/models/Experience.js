@@ -8,6 +8,7 @@ const ExperienceSchema = new mongoose.Schema(
       default: "experience",
     },
     year: { type: String, default: "" },
+    order: { type: Number, default: 0 },
     title: { type: String, default: "" },
     organization: { type: String, default: "" },
     description: { type: String, default: "" },

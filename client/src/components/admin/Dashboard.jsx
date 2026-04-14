@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Plus, Trash2, Edit, LogOut, X } from "lucide-react";
+import { Plus, Trash2, Edit, LogOut, X, ChevronUp, ChevronDown } from "lucide-react";
 import { API_URL } from "../../config/api";
 
 const emptyProjectForm = {
@@ -616,6 +616,20 @@ const Dashboard = ({ token, setToken }) => {
     }
   };
 
+  const handleReorderExperience = async (id, direction) => {
+    try {
+      await axios.post(
+        `${API_URL}/api/experiences/reorder`,
+        { id, direction },
+        { headers: { "x-auth-token": token } },
+      );
+      refreshExperiences();
+    } catch (err) {
+      console.error(err);
+      alert("Error reordering experience entry");
+    }
+  };
+
   const groupedSkills = skills.reduce((groups, skill) => {
     const category = skill.category || "Other";
     if (!groups[category]) {
@@ -633,6 +647,12 @@ const Dashboard = ({ token, setToken }) => {
     groups[section].push(item);
     return groups;
   }, {});
+
+  Object.keys(groupedExperiences).forEach((sectionKey) => {
+    groupedExperiences[sectionKey].sort(
+      (left, right) => (left.order || 0) - (right.order || 0),
+    );
+  });
 
   const sectionLabel =
     activeSection === "projects"
@@ -1982,7 +2002,7 @@ const Dashboard = ({ token, setToken }) => {
                 </div>
 
                 <div className="space-y-4">
-                  {(groupedExperiences[sectionKey] || []).map((item) => (
+                  {(groupedExperiences[sectionKey] || []).map((item, index, list) => (
                     <div
                       key={item._id}
                       className="rounded-xl border border-white/10 bg-primary/50 p-4"
@@ -2000,6 +2020,24 @@ const Dashboard = ({ token, setToken }) => {
                           </p>
                         </div>
                         <div className="flex gap-1 flex-shrink-0">
+                          <button
+                            onClick={() =>
+                              handleReorderExperience(item._id, "up")
+                            }
+                            disabled={index === 0}
+                            className="p-2 hover:bg-slate-700 rounded text-slate-300 disabled:opacity-40 disabled:hover:bg-transparent"
+                          >
+                            <ChevronUp size={16} />
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleReorderExperience(item._id, "down")
+                            }
+                            disabled={index === list.length - 1}
+                            className="p-2 hover:bg-slate-700 rounded text-slate-300 disabled:opacity-40 disabled:hover:bg-transparent"
+                          >
+                            <ChevronDown size={16} />
+                          </button>
                           <button
                             onClick={() => openExperienceForm(item)}
                             className="p-2 hover:bg-slate-700 rounded text-accent"

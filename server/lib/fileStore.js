@@ -137,15 +137,63 @@ function normalizeHeroConfig(hero) {
 }
 
 function normalizeExperience(experience) {
+  const parsedOrder = Number(experience.order);
   return {
     _id: experience._id || crypto.randomUUID(),
     section: experience.section === "education" ? "education" : "experience",
+    order: Number.isFinite(parsedOrder) && parsedOrder > 0 ? parsedOrder : 0,
     year: String(experience.year || "").trim(),
     title: String(experience.title || "").trim(),
     organization: String(experience.organization || "").trim(),
     description: String(experience.description || "").trim(),
     createdAt: experience.createdAt || new Date().toISOString(),
   };
+}
+
+function normalizeAndOrderExperiences(experiences) {
+  const normalized = experiences.map(normalizeExperience);
+  const sections = ["experience", "education"];
+
+  sections.forEach((section) => {
+    const sectionItems = normalized
+      .filter((item) => item.section === section)
+      .sort((left, right) => {
+        const orderDiff = left.order - right.order;
+        if (orderDiff !== 0) {
+          return orderDiff;
+        }
+
+        return new Date(left.createdAt) - new Date(right.createdAt);
+      });
+
+    sectionItems.forEach((item, index) => {
+      item.order = index + 1;
+    });
+  });
+
+  return normalized;
+}
+
+function sortExperiences(experiences) {
+  const sectionRank = {
+    experience: 0,
+    education: 1,
+  };
+
+  return [...experiences].sort((left, right) => {
+    const sectionDiff =
+      (sectionRank[left.section] ?? 99) - (sectionRank[right.section] ?? 99);
+    if (sectionDiff !== 0) {
+      return sectionDiff;
+    }
+
+    const orderDiff = left.order - right.order;
+    if (orderDiff !== 0) {
+      return orderDiff;
+    }
+
+    return new Date(right.createdAt) - new Date(left.createdAt);
+  });
 }
 
 function listProjects() {
@@ -366,11 +414,8 @@ function deleteArticle(id) {
 }
 
 function listExperiences() {
-  return readJson(experiencesFile, [])
-    .map(normalizeExperience)
-    .sort(
-      (left, right) => new Date(right.createdAt) - new Date(left.createdAt),
-    );
+  const normalized = normalizeAndOrderExperiences(readJson(experiencesFile, []));
+  return sortExperiences(normalized);
 }
 
 function getExperienceById(id) {
@@ -378,35 +423,62 @@ function getExperienceById(id) {
 }
 
 function createExperience(experience) {
-  const experiences = listExperiences();
-  const newExperience = normalizeExperience(experience);
-  experiences.unshift(newExperience);
-  writeJson(experiencesFile, experiences);
+  const experiences = normalizeAndOrderExperiences(readJson(experiencesFile, []));
+  const section = experience.section === "education" ? "education" : "experience";
+  const nextOrder =
+    experiences
+      .filter((item) => item.section === section)
+      .reduce((max, item) => Math.max(max, item.order), 0) + 1;
+
+  const newExperience = normalizeExperience({
+    ...experience,
+    section,
+    order: nextOrder,
+  });
+
+  experiences.push(newExperience);
+  writeJson(experiencesFile, sortExperiences(experiences));
   return newExperience;
 }
 
 function updateExperience(id, updates) {
-  const experiences = listExperiences();
+  const experiences = normalizeAndOrderExperiences(readJson(experiencesFile, []));
   const index = experiences.findIndex((experience) => experience._id === id);
 
   if (index === -1) {
     return null;
   }
 
+  const current = experiences[index];
+  const nextSection =
+    updates.section !== undefined
+      ? updates.section === "education"
+        ? "education"
+        : "experience"
+      : current.section;
+  const nextOrder =
+    nextSection === current.section
+      ? current.order
+      : experiences.filter((item) => item.section === nextSection).length + 1;
+
   const updatedExperience = normalizeExperience({
-    ...experiences[index],
+    ...current,
     ...updates,
+    section: nextSection,
+    order: nextOrder,
     _id: id,
-    createdAt: experiences[index].createdAt,
+    createdAt: current.createdAt,
   });
 
   experiences[index] = updatedExperience;
-  writeJson(experiencesFile, experiences);
-  return updatedExperience;
+  const normalized = normalizeAndOrderExperiences(experiences);
+  const sorted = sortExperiences(normalized);
+  writeJson(experiencesFile, sorted);
+  return sorted.find((item) => item._id === id) || updatedExperience;
 }
 
 function deleteExperience(id) {
-  const experiences = listExperiences();
+  const experiences = normalizeAndOrderExperiences(readJson(experiencesFile, []));
   const filteredExperiences = experiences.filter(
     (experience) => experience._id !== id,
   );
@@ -415,8 +487,38 @@ function deleteExperience(id) {
     return false;
   }
 
-  writeJson(experiencesFile, filteredExperiences);
+  const normalized = normalizeAndOrderExperiences(filteredExperiences);
+  writeJson(experiencesFile, sortExperiences(normalized));
   return true;
+}
+
+function reorderExperience(id, direction) {
+  const experiences = normalizeAndOrderExperiences(readJson(experiencesFile, []));
+  const current = experiences.find((experience) => experience._id === id);
+
+  if (!current) {
+    return null;
+  }
+
+  const sectionItems = experiences
+    .filter((experience) => experience.section === current.section)
+    .sort((left, right) => left.order - right.order);
+  const currentIndex = sectionItems.findIndex((experience) => experience._id === id);
+  const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+
+  if (targetIndex < 0 || targetIndex >= sectionItems.length) {
+    return current;
+  }
+
+  const [moved] = sectionItems.splice(currentIndex, 1);
+  sectionItems.splice(targetIndex, 0, moved);
+  sectionItems.forEach((experience, index) => {
+    experience.order = index + 1;
+  });
+
+  const sorted = sortExperiences(experiences);
+  writeJson(experiencesFile, sorted);
+  return sorted.find((experience) => experience._id === id) || moved;
 }
 
 function getHeroConfig() {
@@ -497,6 +599,7 @@ module.exports = {
   createExperience,
   updateExperience,
   deleteExperience,
+  reorderExperience,
   getHeroConfig,
   updateHeroConfig,
   listUsers,
