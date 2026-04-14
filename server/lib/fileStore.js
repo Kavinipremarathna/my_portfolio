@@ -8,6 +8,38 @@ const usersFile = path.join(dataDir, "users.json");
 const skillsFile = path.join(dataDir, "skills.json");
 const galleryFile = path.join(dataDir, "gallery.json");
 const articlesFile = path.join(dataDir, "articles.json");
+const heroFile = path.join(dataDir, "hero.json");
+
+const defaultHeroConfig = {
+  badgeText: "Portfolio / Full-Stack Developer",
+  greeting: "Hello, I am",
+  firstName: "Kavini",
+  lastName: "Premarathna",
+  roles: [
+    "Software Engineer",
+    "Cybersecurity Enthusiast",
+    "Full-Stack Developer",
+  ],
+  bio: "Building secure and scalable digital experiences with elegant UI, smooth motion, and production-ready engineering.",
+  primaryCtaText: "View Projects",
+  primaryCtaHref: "#projects",
+  secondaryCtaText: "Contact Me",
+  secondaryCtaHref: "#contact",
+  resumeButtonText: "Download Resume",
+  resumeUrl: "/resume.pdf",
+  availabilityText: "Freelance / Internship",
+  stats: {
+    focus: "Full-Stack",
+    stack: "React + Node",
+    style: "Clean & Modern",
+  },
+  social: {
+    github: "https://github.com",
+    linkedin: "https://linkedin.com",
+    email: "mailto:email@example.com",
+  },
+  profileImageUrl: "",
+};
 
 function ensureFile(filePath, defaultValue) {
   if (!fs.existsSync(dataDir)) {
@@ -81,6 +113,25 @@ function normalizeArticle(article) {
     source: article.source || "original",
     mediumUrl: article.mediumUrl || "",
     createdAt: article.createdAt || new Date().toISOString(),
+  };
+}
+
+function normalizeHeroConfig(hero) {
+  const next = hero && typeof hero === "object" ? hero : {};
+  return {
+    ...defaultHeroConfig,
+    ...next,
+    roles: Array.isArray(next.roles)
+      ? next.roles.filter(Boolean)
+      : defaultHeroConfig.roles,
+    stats: {
+      ...defaultHeroConfig.stats,
+      ...(next.stats && typeof next.stats === "object" ? next.stats : {}),
+    },
+    social: {
+      ...defaultHeroConfig.social,
+      ...(next.social && typeof next.social === "object" ? next.social : {}),
+    },
   };
 }
 
@@ -301,6 +352,17 @@ function deleteArticle(id) {
   return true;
 }
 
+function getHeroConfig() {
+  return normalizeHeroConfig(readJson(heroFile, defaultHeroConfig));
+}
+
+function updateHeroConfig(updates) {
+  const current = getHeroConfig();
+  const merged = normalizeHeroConfig({ ...current, ...updates });
+  writeJson(heroFile, merged);
+  return merged;
+}
+
 function listUsers() {
   return readJson(usersFile, []);
 }
@@ -363,6 +425,8 @@ module.exports = {
   createArticle,
   updateArticle,
   deleteArticle,
+  getHeroConfig,
+  updateHeroConfig,
   listUsers,
   countUsers,
   findUserByUsername,

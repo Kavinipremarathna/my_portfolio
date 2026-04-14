@@ -1,7 +1,7 @@
 import fs from "node:fs";
-import path from "node:path";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
+import { resolveJsonFilePath } from "./storage.js";
 
 const fallbackProjects = [
   {
@@ -22,19 +22,8 @@ const fallbackProjects = [
   },
 ];
 
-const projectFileCandidates = [
-  path.join(process.cwd(), "server", "data", "projects.json"),
-  path.join(process.cwd(), "data", "projects.json"),
-];
-
 const resolveProjectFile = () => {
-  for (const candidate of projectFileCandidates) {
-    if (fs.existsSync(candidate)) {
-      return candidate;
-    }
-  }
-
-  return projectFileCandidates[0];
+  return resolveJsonFilePath("projects.json");
 };
 
 const setCors = (res) => {

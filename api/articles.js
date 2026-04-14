@@ -1,7 +1,7 @@
 import fs from "node:fs";
-import path from "node:path";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
+import { resolveJsonFilePath } from "./storage.js";
 
 const defaultArticles = [
   {
@@ -58,18 +58,8 @@ const defaultArticles = [
   },
 ];
 
-const articleFileCandidates = [
-  path.join(process.cwd(), "server", "data", "articles.json"),
-  path.join(process.cwd(), "data", "articles.json"),
-];
-
 const resolveArticleFile = () => {
-  for (const candidate of articleFileCandidates) {
-    if (fs.existsSync(candidate)) {
-      return candidate;
-    }
-  }
-  return articleFileCandidates[0];
+  return resolveJsonFilePath("articles.json");
 };
 
 const setCors = (res) => {

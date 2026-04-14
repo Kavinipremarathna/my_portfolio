@@ -1,7 +1,7 @@
 import fs from "node:fs";
-import path from "node:path";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
+import { resolveJsonFilePath } from "./storage.js";
 
 const fallbackSkills = [
   {
@@ -60,19 +60,8 @@ const fallbackSkills = [
   },
 ];
 
-const skillsFileCandidates = [
-  path.join(process.cwd(), "server", "data", "skills.json"),
-  path.join(process.cwd(), "data", "skills.json"),
-];
-
 const resolveSkillsFile = () => {
-  for (const candidate of skillsFileCandidates) {
-    if (fs.existsSync(candidate)) {
-      return candidate;
-    }
-  }
-
-  return skillsFileCandidates[0];
+  return resolveJsonFilePath("skills.json");
 };
 
 const setCors = (res) => {

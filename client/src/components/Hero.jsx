@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion as Motion, useReducedMotion } from "framer-motion";
+import axios from "axios";
 import {
   FiGithub,
   FiLinkedin,
@@ -12,18 +13,76 @@ import {
 import { Sparkles } from "lucide-react";
 
 import profileImg from "../assets/profile.jpg";
+import { API_URL } from "../config/api";
 
-const roles = [
-  "Software Engineer",
-  "Cybersecurity Enthusiast",
-  "Full-Stack Developer",
-];
+const defaultHeroConfig = {
+  badgeText: "Portfolio / Full-Stack Developer",
+  greeting: "Hello, I am",
+  firstName: "Kavini",
+  lastName: "Premarathna",
+  roles: [
+    "Software Engineer",
+    "Cybersecurity Enthusiast",
+    "Full-Stack Developer",
+  ],
+  bio: "Building secure and scalable digital experiences with elegant UI, smooth motion, and production-ready engineering.",
+  primaryCtaText: "View Projects",
+  primaryCtaHref: "#projects",
+  secondaryCtaText: "Contact Me",
+  secondaryCtaHref: "#contact",
+  resumeButtonText: "Download Resume",
+  resumeUrl: "/resume.pdf",
+  availabilityText: "Freelance / Internship",
+  stats: {
+    focus: "Full-Stack",
+    stack: "React + Node",
+    style: "Clean & Modern",
+  },
+  social: {
+    github: "https://github.com",
+    linkedin: "https://linkedin.com",
+    email: "mailto:email@example.com",
+  },
+  profileImageUrl: "",
+};
 
 const Hero = () => {
   const reduceMotion = useReducedMotion();
+  const [heroConfig, setHeroConfig] = useState(defaultHeroConfig);
   const [roleIndex, setRoleIndex] = useState(0);
   const [typedRole, setTypedRole] = useState("");
   const [deleting, setDeleting] = useState(false);
+
+  const roles =
+    Array.isArray(heroConfig.roles) && heroConfig.roles.length > 0
+      ? heroConfig.roles
+      : defaultHeroConfig.roles;
+
+  useEffect(() => {
+    const loadHeroConfig = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/hero`);
+        if (response.data && typeof response.data === "object") {
+          setHeroConfig((prev) => ({
+            ...prev,
+            ...response.data,
+            stats: {
+              ...prev.stats,
+              ...(response.data.stats || {}),
+            },
+            social: {
+              ...prev.social,
+              ...(response.data.social || {}),
+            },
+          }));
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    void loadHeroConfig();
+  }, []);
 
   useEffect(() => {
     const currentRole = roles[roleIndex];
@@ -53,7 +112,7 @@ const Hero = () => {
     );
 
     return () => clearTimeout(timer);
-  }, [typedRole, deleting, roleIndex]);
+  }, [typedRole, deleting, roleIndex, roles]);
 
   return (
     <section
@@ -100,15 +159,15 @@ const Hero = () => {
         >
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-300">
             <Sparkles size={14} className="text-accent" />
-            Portfolio / Full-Stack Developer
+            {heroConfig.badgeText}
           </div>
           <h2 className="mt-6 text-sm font-semibold uppercase tracking-[0.45em] text-accent/80">
-            Hello, I am
+            {heroConfig.greeting}
           </h2>
           <h1 className="mt-4 text-[2.8rem] font-black leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5.2rem]">
-            Kavini
+            {heroConfig.firstName}
             <br />
-            Premarathna
+            {heroConfig.lastName}
           </h1>
 
           <div className="mt-4 h-10 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4">
@@ -120,43 +179,43 @@ const Hero = () => {
           </div>
 
           <p className="mt-6 max-w-[37rem] text-lg leading-8 text-slate-300 md:text-xl">
-            Building secure and scalable digital experiences with elegant UI,
-            smooth motion, and production-ready engineering.
+            {heroConfig.bio}
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4 justify-start">
             <Motion.a
-              href="#projects"
+              href={heroConfig.primaryCtaHref || "#projects"}
               whileHover={reduceMotion ? {} : { y: -3, scale: 1.02 }}
               whileTap={reduceMotion ? {} : { scale: 0.98 }}
               className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-primary shadow-lg shadow-accent/20 transition-transform hover:-translate-y-0.5"
             >
-              View Projects <FiArrowRight size={16} />
+              {heroConfig.primaryCtaText} <FiArrowRight size={16} />
             </Motion.a>
             <Motion.a
-              href="/resume.pdf"
+              href={heroConfig.resumeUrl || "/resume.pdf"}
               download="Kavini-Premarathna-Resume.pdf"
               whileHover={reduceMotion ? {} : { y: -3, scale: 1.02 }}
               whileTap={reduceMotion ? {} : { scale: 0.98 }}
               className="inline-flex items-center gap-2 rounded-full border border-accent/35 bg-accent/10 px-6 py-3 font-semibold text-accent transition-colors hover:bg-accent/20"
             >
-              Download Resume <FiDownload size={16} />
+              {heroConfig.resumeButtonText || "Download Resume"}{" "}
+              <FiDownload size={16} />
             </Motion.a>
             <Motion.a
-              href="#contact"
+              href={heroConfig.secondaryCtaHref || "#contact"}
               whileHover={reduceMotion ? {} : { y: -3, scale: 1.02 }}
               whileTap={reduceMotion ? {} : { scale: 0.98 }}
               className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-6 py-3 font-semibold text-white transition-colors hover:border-accent/40 hover:bg-white/10"
             >
-              Contact Me
+              {heroConfig.secondaryCtaText}
             </Motion.a>
           </div>
 
           <div className="mt-10 grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { label: "Focus", value: "Full-Stack" },
-              { label: "Stack", value: "React + Node" },
-              { label: "Style", value: "Clean & Modern" },
+              { label: "Focus", value: heroConfig.stats?.focus },
+              { label: "Stack", value: heroConfig.stats?.stack },
+              { label: "Style", value: heroConfig.stats?.style },
             ].map((item) => (
               <div
                 key={item.label}
@@ -174,7 +233,7 @@ const Hero = () => {
 
           <div className="mt-10 flex gap-6 justify-start text-slate-400">
             <Motion.a
-              href="https://github.com"
+              href={heroConfig.social?.github || "https://github.com"}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={reduceMotion ? {} : { y: -4, scale: 1.08 }}
@@ -183,7 +242,7 @@ const Hero = () => {
               <FiGithub size={24} />
             </Motion.a>
             <Motion.a
-              href="https://linkedin.com"
+              href={heroConfig.social?.linkedin || "https://linkedin.com"}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={reduceMotion ? {} : { y: -4, scale: 1.08 }}
@@ -192,7 +251,7 @@ const Hero = () => {
               <FiLinkedin size={24} />
             </Motion.a>
             <Motion.a
-              href="mailto:email@example.com"
+              href={heroConfig.social?.email || "mailto:email@example.com"}
               whileHover={reduceMotion ? {} : { y: -4, scale: 1.08 }}
               className="hover:text-white transition-colors"
             >
@@ -227,7 +286,7 @@ const Hero = () => {
             <div className="absolute inset-0 rounded-[2rem] overflow-hidden border border-white/10 bg-slate-900 shadow-2xl shadow-black/40">
               <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent z-10" />
               <img
-                src={profileImg}
+                src={heroConfig.profileImageUrl || profileImg}
                 alt="Kavini Premarathna"
                 className="w-full h-full object-cover"
               />
@@ -237,7 +296,7 @@ const Hero = () => {
                 Available For
               </p>
               <p className="mt-1 text-sm font-semibold text-white">
-                Freelance / Internship
+                {heroConfig.availabilityText}
               </p>
             </div>
           </Motion.div>

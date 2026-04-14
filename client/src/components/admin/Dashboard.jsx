@@ -39,6 +39,29 @@ const emptyArticleForm = {
   mediumUrl: "",
 };
 
+const emptyHeroForm = {
+  badgeText: "Portfolio / Full-Stack Developer",
+  greeting: "Hello, I am",
+  firstName: "Kavini",
+  lastName: "Premarathna",
+  roles: "Software Engineer, Cybersecurity Enthusiast, Full-Stack Developer",
+  bio: "Building secure and scalable digital experiences with elegant UI, smooth motion, and production-ready engineering.",
+  primaryCtaText: "View Projects",
+  primaryCtaHref: "#projects",
+  secondaryCtaText: "Contact Me",
+  secondaryCtaHref: "#contact",
+  resumeButtonText: "Download Resume",
+  resumeUrl: "/resume.pdf",
+  availabilityText: "Freelance / Internship",
+  focusStat: "Full-Stack",
+  stackStat: "React + Node",
+  styleStat: "Clean & Modern",
+  githubUrl: "https://github.com",
+  linkedinUrl: "https://linkedin.com",
+  emailUrl: "mailto:email@example.com",
+  profileImageUrl: "",
+};
+
 const galleryCategorySuggestions = [
   "nature",
   "personal",
@@ -53,6 +76,7 @@ const Dashboard = ({ token, setToken }) => {
   const [skills, setSkills] = useState([]);
   const [galleryPhotos, setGalleryPhotos] = useState([]);
   const [articles, setArticles] = useState([]);
+  const [heroConfig, setHeroConfig] = useState(null);
   const [activeSection, setActiveSection] = useState("projects");
   const [editingType, setEditingType] = useState(null);
   const [currentId, setCurrentId] = useState(null);
@@ -61,6 +85,7 @@ const Dashboard = ({ token, setToken }) => {
   const [skillForm, setSkillForm] = useState(emptySkillForm);
   const [galleryForm, setGalleryForm] = useState(emptyGalleryForm);
   const [articleForm, setArticleForm] = useState(emptyArticleForm);
+  const [heroForm, setHeroForm] = useState(emptyHeroForm);
 
   useEffect(() => {
     const loadDashboardData = async () => {
@@ -70,11 +95,13 @@ const Dashboard = ({ token, setToken }) => {
           skillsResponse,
           galleryResponse,
           articlesResponse,
+          heroResponse,
         ] = await Promise.all([
           axios.get(`${API_URL}/api/projects`),
           axios.get(`${API_URL}/api/skills`),
           axios.get(`${API_URL}/api/gallery`),
           axios.get(`${API_URL}/api/articles`),
+          axios.get(`${API_URL}/api/hero`),
         ]);
 
         setProjects(
@@ -89,6 +116,43 @@ const Dashboard = ({ token, setToken }) => {
         setArticles(
           Array.isArray(articlesResponse.data) ? articlesResponse.data : [],
         );
+        const heroData =
+          heroResponse.data && typeof heroResponse.data === "object"
+            ? heroResponse.data
+            : null;
+        setHeroConfig(heroData);
+        if (heroData) {
+          setHeroForm({
+            badgeText: heroData.badgeText || emptyHeroForm.badgeText,
+            greeting: heroData.greeting || emptyHeroForm.greeting,
+            firstName: heroData.firstName || emptyHeroForm.firstName,
+            lastName: heroData.lastName || emptyHeroForm.lastName,
+            roles: Array.isArray(heroData.roles)
+              ? heroData.roles.join(", ")
+              : emptyHeroForm.roles,
+            bio: heroData.bio || emptyHeroForm.bio,
+            primaryCtaText:
+              heroData.primaryCtaText || emptyHeroForm.primaryCtaText,
+            primaryCtaHref:
+              heroData.primaryCtaHref || emptyHeroForm.primaryCtaHref,
+            secondaryCtaText:
+              heroData.secondaryCtaText || emptyHeroForm.secondaryCtaText,
+            secondaryCtaHref:
+              heroData.secondaryCtaHref || emptyHeroForm.secondaryCtaHref,
+            resumeButtonText:
+              heroData.resumeButtonText || emptyHeroForm.resumeButtonText,
+            resumeUrl: heroData.resumeUrl || emptyHeroForm.resumeUrl,
+            availabilityText:
+              heroData.availabilityText || emptyHeroForm.availabilityText,
+            focusStat: heroData.stats?.focus || emptyHeroForm.focusStat,
+            stackStat: heroData.stats?.stack || emptyHeroForm.stackStat,
+            styleStat: heroData.stats?.style || emptyHeroForm.styleStat,
+            githubUrl: heroData.social?.github || emptyHeroForm.githubUrl,
+            linkedinUrl: heroData.social?.linkedin || emptyHeroForm.linkedinUrl,
+            emailUrl: heroData.social?.email || emptyHeroForm.emailUrl,
+            profileImageUrl: heroData.profileImageUrl || "",
+          });
+        }
       } catch (err) {
         console.error(err);
       }
@@ -143,6 +207,7 @@ const Dashboard = ({ token, setToken }) => {
     setSkillForm(emptySkillForm);
     setGalleryForm(emptyGalleryForm);
     setArticleForm(emptyArticleForm);
+    setHeroForm(emptyHeroForm);
     setEditingType(null);
     setCurrentId(null);
   };
@@ -234,6 +299,11 @@ const Dashboard = ({ token, setToken }) => {
     }
 
     setEditingType("article");
+    setShowForm(true);
+  };
+
+  const openHeroForm = () => {
+    setEditingType("hero");
     setShowForm(true);
   };
 
@@ -344,6 +414,47 @@ const Dashboard = ({ token, setToken }) => {
         refreshArticles();
       }
 
+      if (editingType === "hero") {
+        const roles = String(heroForm.roles)
+          .split(",")
+          .map((role) => role.trim())
+          .filter(Boolean);
+
+        const heroData = {
+          badgeText: heroForm.badgeText.trim(),
+          greeting: heroForm.greeting.trim(),
+          firstName: heroForm.firstName.trim(),
+          lastName: heroForm.lastName.trim(),
+          roles,
+          bio: heroForm.bio.trim(),
+          primaryCtaText: heroForm.primaryCtaText.trim(),
+          primaryCtaHref: heroForm.primaryCtaHref.trim(),
+          secondaryCtaText: heroForm.secondaryCtaText.trim(),
+          secondaryCtaHref: heroForm.secondaryCtaHref.trim(),
+          resumeButtonText: heroForm.resumeButtonText.trim(),
+          resumeUrl: heroForm.resumeUrl.trim(),
+          availabilityText: heroForm.availabilityText.trim(),
+          stats: {
+            focus: heroForm.focusStat.trim(),
+            stack: heroForm.stackStat.trim(),
+            style: heroForm.styleStat.trim(),
+          },
+          social: {
+            github: heroForm.githubUrl.trim(),
+            linkedin: heroForm.linkedinUrl.trim(),
+            email: heroForm.emailUrl.trim(),
+          },
+          profileImageUrl: heroForm.profileImageUrl.trim(),
+        };
+
+        const response = await axios.put(
+          `${API_URL}/api/hero`,
+          heroData,
+          config,
+        );
+        setHeroConfig(response.data || heroData);
+      }
+
       setShowForm(false);
       resetForms();
     } catch (err) {
@@ -432,7 +543,9 @@ const Dashboard = ({ token, setToken }) => {
         ? "Skills"
         : activeSection === "gallery"
           ? "Gallery"
-          : "Articles";
+          : activeSection === "articles"
+            ? "Articles"
+            : "Hero";
   const sectionCount =
     activeSection === "projects"
       ? projects.length
@@ -440,7 +553,11 @@ const Dashboard = ({ token, setToken }) => {
         ? skills.length
         : activeSection === "gallery"
           ? galleryPhotos.length
-          : articles.length;
+          : activeSection === "articles"
+            ? articles.length
+            : heroConfig
+              ? 1
+              : 0;
 
   return (
     <div className="min-h-screen bg-primary">
@@ -512,6 +629,17 @@ const Dashboard = ({ token, setToken }) => {
             >
               Articles
             </button>
+            <button
+              type="button"
+              onClick={() => setActiveSection("hero")}
+              className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${
+                activeSection === "hero"
+                  ? "bg-accent text-primary"
+                  : "text-slate-300 hover:text-white"
+              }`}
+            >
+              Hero
+            </button>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -528,8 +656,10 @@ const Dashboard = ({ token, setToken }) => {
                   openSkillForm();
                 } else if (activeSection === "gallery") {
                   openGalleryForm();
-                } else {
+                } else if (activeSection === "articles") {
                   openArticleForm();
+                } else {
+                  openHeroForm();
                 }
               }}
               className="btn-primary flex items-center gap-2"
@@ -541,7 +671,9 @@ const Dashboard = ({ token, setToken }) => {
                   ? "Skill Section"
                   : activeSection === "gallery"
                     ? "Gallery Photo"
-                    : "Article"}
+                    : activeSection === "articles"
+                      ? "Article"
+                      : "Hero Content"}
             </button>
           </div>
         </div>
@@ -564,18 +696,22 @@ const Dashboard = ({ token, setToken }) => {
                           ? currentId
                             ? "Edit Article"
                             : "New Article"
-                          : currentId
-                            ? "Edit Gallery Photo"
-                            : "New Gallery Photo"}
+                          : editingType === "hero"
+                            ? "Edit Hero"
+                            : currentId
+                              ? "Edit Gallery Photo"
+                              : "New Gallery Photo"}
                   </h3>
                   <p className="text-sm text-slate-400 mt-1">
                     {editingType === "skill"
                       ? "Add a skill name and category. The category becomes a separate section on the site."
                       : editingType === "article"
                         ? "Write full in-site articles and optionally keep Medium URL as source reference."
-                        : editingType === "gallery"
-                          ? "Add a title, category, and image URL for your gallery page."
-                          : "Create or update a portfolio project."}
+                        : editingType === "hero"
+                          ? "Control hero headline, roles, CTAs, profile links, and highlighted stats from admin."
+                          : editingType === "gallery"
+                            ? "Add a title, category, and image URL for your gallery page."
+                            : "Create or update a portfolio project."}
                   </p>
                 </div>
                 <button
@@ -836,7 +972,7 @@ const Dashboard = ({ token, setToken }) => {
                       </div>
                     </div>
                   </>
-                ) : (
+                ) : editingType === "article" ? (
                   <>
                     <div>
                       <label className="block text-slate-400 mb-1">Title</label>
@@ -1031,6 +1167,346 @@ const Dashboard = ({ token, setToken }) => {
                       </label>
                     </div>
                   </>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Badge Text
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.badgeText}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              badgeText: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Greeting
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.greeting}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              greeting: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          First Name
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.firstName}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              firstName: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Last Name
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.lastName}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              lastName: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 mb-1">
+                        Roles (comma separated)
+                      </label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        value={heroForm.roles}
+                        onChange={(e) =>
+                          setHeroForm({ ...heroForm, roles: e.target.value })
+                        }
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 mb-1">Bio</label>
+                      <textarea
+                        className="input-field h-24"
+                        value={heroForm.bio}
+                        onChange={(e) =>
+                          setHeroForm({ ...heroForm, bio: e.target.value })
+                        }
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Primary CTA Text
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.primaryCtaText}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              primaryCtaText: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Primary CTA Link
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.primaryCtaHref}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              primaryCtaHref: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Secondary CTA Text
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.secondaryCtaText}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              secondaryCtaText: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Secondary CTA Link
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.secondaryCtaHref}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              secondaryCtaHref: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Resume Button Text
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.resumeButtonText}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              resumeButtonText: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Resume URL
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.resumeUrl}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              resumeUrl: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 mb-1">
+                        Availability Text
+                      </label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        value={heroForm.availabilityText}
+                        onChange={(e) =>
+                          setHeroForm({
+                            ...heroForm,
+                            availabilityText: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Focus Stat
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.focusStat}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              focusStat: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Stack Stat
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.stackStat}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              stackStat: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Style Stat
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.styleStat}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              styleStat: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          GitHub URL
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.githubUrl}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              githubUrl: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          LinkedIn URL
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.linkedinUrl}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              linkedinUrl: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Email Link
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.emailUrl}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              emailUrl: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1">
+                          Profile Image URL (optional)
+                        </label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={heroForm.profileImageUrl}
+                          onChange={(e) =>
+                            setHeroForm({
+                              ...heroForm,
+                              profileImageUrl: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                  </>
                 )}
 
                 <button type="submit" className="w-full btn-primary mt-4">
@@ -1046,9 +1522,11 @@ const Dashboard = ({ token, setToken }) => {
                         ? currentId
                           ? "Update Photo"
                           : "Create Photo"
-                        : currentId
-                          ? "Update Article"
-                          : "Create Article"}
+                        : editingType === "article"
+                          ? currentId
+                            ? "Update Article"
+                            : "Create Article"
+                          : "Save Hero Settings"}
                 </button>
               </form>
             </div>
@@ -1215,7 +1693,7 @@ const Dashboard = ({ token, setToken }) => {
               </div>
             )}
           </div>
-        ) : (
+        ) : activeSection === "articles" ? (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {articles.map((article) => (
               <div
@@ -1261,6 +1739,54 @@ const Dashboard = ({ token, setToken }) => {
                 above.
               </div>
             )}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-white/10 bg-secondary/70 p-6 md:p-8">
+            <p className="text-xs uppercase tracking-[0.35em] text-accent">
+              Hero Configuration
+            </p>
+            <h3 className="mt-3 text-2xl font-bold text-white">
+              {heroConfig?.firstName || "Kavini"}{" "}
+              {heroConfig?.lastName || "Premarathna"}
+            </h3>
+            <p className="mt-3 text-slate-300 leading-8">
+              {heroConfig?.bio || "No hero content configured yet."}
+            </p>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              <div className="rounded-xl border border-white/10 bg-primary/40 p-4">
+                <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
+                  Focus
+                </p>
+                <p className="mt-2 text-white font-semibold">
+                  {heroConfig?.stats?.focus || "-"}
+                </p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-primary/40 p-4">
+                <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
+                  Stack
+                </p>
+                <p className="mt-2 text-white font-semibold">
+                  {heroConfig?.stats?.stack || "-"}
+                </p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-primary/40 p-4">
+                <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
+                  Style
+                </p>
+                <p className="mt-2 text-white font-semibold">
+                  {heroConfig?.stats?.style || "-"}
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={openHeroForm}
+              className="mt-6 btn-primary inline-flex items-center gap-2"
+            >
+              <Edit size={16} /> Edit Hero Content
+            </button>
           </div>
         )}
       </div>

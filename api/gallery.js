@@ -1,23 +1,12 @@
 import fs from "node:fs";
-import path from "node:path";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
+import { resolveJsonFilePath } from "./storage.js";
 
 const fallbackPhotos = [];
 
-const galleryFileCandidates = [
-  path.join(process.cwd(), "server", "data", "gallery.json"),
-  path.join(process.cwd(), "data", "gallery.json"),
-];
-
 const resolveGalleryFile = () => {
-  for (const candidate of galleryFileCandidates) {
-    if (fs.existsSync(candidate)) {
-      return candidate;
-    }
-  }
-
-  return galleryFileCandidates[0];
+  return resolveJsonFilePath("gallery.json");
 };
 
 const setCors = (res) => {

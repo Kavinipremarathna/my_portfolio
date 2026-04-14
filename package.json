@@ -4,7 +4,7 @@
   "description": "Full-stack portfolio application",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"cd client && npm run dev\" \"cd server && npm start\"",
+    "dev": "kill-port 5173 5000 && concurrently \"cd client && npm run dev\" \"cd server && npm start\"",
     "build": "cd client && npm run build"
   },
   "dependencies": {
@@ -12,6 +12,7 @@
     "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
-    "concurrently": "^9.0.0"
+    "concurrently": "^9.0.0",
+    "kill-port": "^2.0.1"
   }
 }

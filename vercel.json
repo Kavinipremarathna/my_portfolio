@@ -17,6 +17,9 @@
     },
     "api/articles.js": {
       "includeFiles": "server/data/articles.json"
+    },
+    "api/hero.js": {
+      "includeFiles": "server/data/hero.json"
     }
   },
   "outputDirectory": "client/dist",
@@ -40,6 +43,10 @@
     {
       "source": "/api/articles/(.*)",
       "destination": "/api/articles?route=$1"
+    },
+    {
+      "source": "/api/hero/(.*)",
+      "destination": "/api/hero?route=$1"
     },
     {
       "source": "/(.*)",

@@ -1,12 +1,7 @@
 import fs from "node:fs";
-import path from "node:path";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
-const usersFileCandidates = [
-  path.join(process.cwd(), "server", "data", "users.json"),
-  path.join(process.cwd(), "data", "users.json"),
-];
+import { resolveJsonFilePath } from "./storage.js";
 
 const bootstrapAdmin = {
   _id: "bootstrap-admin",
@@ -17,13 +12,7 @@ const bootstrapAdmin = {
 };
 
 const resolveUsersFile = () => {
-  for (const candidate of usersFileCandidates) {
-    if (fs.existsSync(candidate)) {
-      return candidate;
-    }
-  }
-
-  return usersFileCandidates[0];
+  return resolveJsonFilePath("users.json");
 };
 
 const json = (res, status, payload) => {
