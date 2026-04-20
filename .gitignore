@@ -13,6 +13,7 @@ node_modules/
 
 # Local file-store data (dev fallback)
 server/data/*.json
+!server/data/projects.json
 
 # =========================
 # Build outputs

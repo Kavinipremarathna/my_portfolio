@@ -1,0 +1,58 @@
+[
+  {
+    "_id": "55957331-776f-4703-afc2-7a3ee1d3cdce",
+    "title": "Real-Time Crypto Forecasting App",
+    "description": "🔍 What this project does: • Fetches real-time crypto data dynamically • Applies preprocessing and sequence modeling • Trains a forecasting model based on user inputs • Visualizes actual vs predicted trends • Generates next-day price predictions • Evaluates performance using RMSE 🧠 Key Concepts Applied: • Time-series forecasting • Sliding window sequence generation • Model evaluation & error analysis • Avoiding data leakage • Interactive ML system design",
+    "tags": [
+      "Python",
+      "Streamlit",
+      "Scikit-learn",
+      "Pandas",
+      "yFinance"
+    ],
+    "imageUrl": "https://www.image2url.com/r2/default/images/1776675595480-72607b43-ace2-430a-a241-9b59a2d3095d.png",
+    "liveLink": "https://cryptoforecast-app.streamlit.app/",
+    "repoLink": "https://github.com/Kavinipremarathna/CryptoForecast-App.git",
+    "featured": true,
+    "createdAt": "2026-04-20T09:02:18.110Z"
+  },
+  {
+    "_id": "e2efc48b-7392-4232-9a8e-3eeeb73e12cf",
+    "title": "ScanMe – AI-Based Body Posture Analysis System",
+    "description": "Developed a web-based AI-powered posture analysis system that detects body alignment issues using full-body images. Integrated MediaPipe Pose and OpenCV to extract 33 skeletal landmarks and compute joint angles for identifying posture deviations such as shoulder imbalance, spine tilt, and hip misalignment.\n\nDesigned a seamless Laravel–Python integration pipeline where user-uploaded images are processed through a backend AI script, returning structured posture insights via a responsive web interface.\n\nImplemented rule-based classification algorithms achieving approximately 85% overall accuracy across multiple posture metrics. Built with scalability and usability in mind, featuring a mobile-friendly UI, chatbot guidance, and informative feedback reports.\n\n⚠️ Designed as a posture screening tool for awareness purposes, not for medical diagnosis.",
+    "tags": [
+      "Laravel",
+      "PHP",
+      "Python",
+      "MediaPipe",
+      "OpenCV",
+      "Bootstrap"
+    ],
+    "imageUrl": "https://www.image2url.com/r2/default/images/1776674828864-029c3f20-c89e-4c80-82ed-5c36b8b967fc.png",
+    "liveLink": "",
+    "repoLink": "https://github.com/AI-full-body-Image-analysis/AI-full-body-image-analysis",
+    "featured": true,
+    "createdAt": "2026-04-20T08:47:35.951Z"
+  },
+  {
+    "_id": "a7e832cc-db3c-4eea-ae44-d2a427219597",
+    "title": "Planova ",
+    "description": "Planova, a modern web-based event management platform created to transform the way people organize weddings, birthdays, and engagements. The system combines event creation, theme customization, budget tracking, vendor package browsing, and secure online payments into a seamless experience. With a responsive and user-friendly interface, Planova is designed to make event planning stress-free and efficient, while showcasing the power of full-stack web technologies in solving real-world challenges.",
+    "tags": [
+      "React.js",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "Stripe API",
+      "Tailwind CSS",
+      "Figma",
+      "Postman",
+      "Git/GitHub"
+    ],
+    "imageUrl": "https://mir-s3-cdn-cf.behance.net/projects/404/ef4fb2200784279.66686f8b5be30.jpg",
+    "liveLink": "https://www.linkedin.com/posts/kavini-premarathna_webdevelopment-reactjs-nodejs-activity-7369738007467233280-Ht-K?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEUuUucBgAieWhM6s-XjrZwS_dXN60YHdAc",
+    "repoLink": "",
+    "featured": true,
+    "createdAt": "2026-03-13T16:41:08.098Z"
+  }
+]
