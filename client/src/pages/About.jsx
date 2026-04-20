@@ -125,7 +125,7 @@ const AboutPage = () => {
                 <div className="mt-8 space-y-4 text-slate-300">
                   <div className="flex items-center gap-3">
                     <Mail size={18} className="text-accent" />{" "}
-                    kavini@example.com
+                    kavinipremarathna@gmail.com
                   </div>
                   <div className="flex items-center gap-3">
                     <MapPin size={18} className="text-accent" /> Colombo, Sri

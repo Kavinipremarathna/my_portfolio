@@ -44,7 +44,9 @@ const Contact = () => {
               <Motion.button
                 type="button"
                 whileHover={{ y: -3 }}
-                onClick={() => handleCopy("email", "kavini@example.com")}
+                onClick={() =>
+                  handleCopy("email", "kavinipremarathna@gmail.com")
+                }
                 className="w-full text-left flex items-center gap-4 text-slate-300"
               >
                 <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-accent border border-transparent hover:border-accent/40 transition-colors">
@@ -53,7 +55,7 @@ const Contact = () => {
                 <div>
                   <h4 className="text-white font-medium">Email</h4>
                   <p>
-                    kavini@example.com{" "}
+                    kavinipremarathna@gmail.com{" "}
                     {copiedField === "email" ? "• copied" : ""}
                   </p>
                 </div>
@@ -61,7 +63,7 @@ const Contact = () => {
               <Motion.button
                 type="button"
                 whileHover={{ y: -3 }}
-                onClick={() => handleCopy("phone", "+94 77 123 4567")}
+                onClick={() => handleCopy("phone", "+94719075060")}
                 className="w-full text-left flex items-center gap-4 text-slate-300"
               >
                 <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-accent border border-transparent hover:border-accent/40 transition-colors">
@@ -70,7 +72,7 @@ const Contact = () => {
                 <div>
                   <h4 className="text-white font-medium">Phone</h4>
                   <p>
-                    +94 77 123 4567 {copiedField === "phone" ? "• copied" : ""}
+                    +94719075060 {copiedField === "phone" ? "• copied" : ""}
                   </p>
                 </div>
               </Motion.button>
@@ -80,7 +82,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-medium">Location</h4>
-                  <p>Colombo, Sri Lanka</p>
+                  <p>Panadura, Sri Lanka</p>
                 </div>
               </div>
             </div>

@@ -60,7 +60,7 @@ const Footer = () => {
                 <Linkedin size={18} />
               </a>
               <a
-                href="mailto:kavini@example.com"
+                href="mailto:kavinipremarathna@gmail.com"
                 className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all hover:border-accent/40 hover:text-accent hover:-translate-y-0.5"
                 aria-label="Email"
               >
@@ -106,22 +106,22 @@ const Footer = () => {
             </h3>
             <div className="mt-5 space-y-4 text-slate-300">
               <a
-                href="mailto:kavini@example.com"
+                href="mailto:kavinipremarathna@gmail.com"
                 className="flex items-center gap-3 transition-colors hover:text-accent"
               >
                 <Mail size={16} className="text-accent" />
-                kavini@example.com
+                kavinipremarathna@gmail.com
               </a>
               <a
                 href="tel:+94771234567"
                 className="flex items-center gap-3 transition-colors hover:text-accent"
               >
                 <Phone size={16} className="text-accent" />
-                +94 77 123 4567
+                +94719075060
               </a>
               <p className="flex items-center gap-3">
                 <MapPin size={16} className="text-accent" />
-                Colombo, Sri Lanka
+                Panadura, Sri Lanka
               </p>
             </div>
           </div>

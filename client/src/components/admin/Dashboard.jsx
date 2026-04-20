@@ -74,7 +74,7 @@ const emptyHeroForm = {
   styleStat: "Clean & Modern",
   githubUrl: "https://github.com",
   linkedinUrl: "https://linkedin.com",
-  emailUrl: "mailto:email@example.com",
+  emailUrl: "mailto:kavinipremarathna@gmail.com",
   profileImageUrl: "",
 };
 

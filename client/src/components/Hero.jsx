@@ -41,7 +41,7 @@ const defaultHeroConfig = {
   social: {
     github: "https://github.com",
     linkedin: "https://linkedin.com",
-    email: "mailto:email@example.com",
+    email: "mailto:kavinipremarathna@gmail.com",
   },
   profileImageUrl: "",
 };
@@ -251,7 +251,9 @@ const Hero = () => {
               <FiLinkedin size={24} />
             </Motion.a>
             <Motion.a
-              href={heroConfig.social?.email || "mailto:email@example.com"}
+              href={
+                heroConfig.social?.email || "mailto:kavinipremarathna@gmail.com"
+              }
               whileHover={reduceMotion ? {} : { y: -4, scale: 1.08 }}
               className="hover:text-white transition-colors"
             >
