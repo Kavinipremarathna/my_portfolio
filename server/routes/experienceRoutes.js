@@ -39,7 +39,8 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", auth, async (req, res) => {
-  const { section, year, title, organization, description } = req.body;
+  const { section, year, title, organization, description, imageUrl } =
+    req.body;
 
   if (!year || !title || !organization || !description) {
     return res.status(400).json({ msg: "Please enter all fields" });
@@ -67,6 +68,7 @@ router.post("/", auth, async (req, res) => {
           title,
           organization,
           description,
+          imageUrl: imageUrl || "",
         }).save()
       : fileStore.createExperience({
           section: normalizedSection,
@@ -74,6 +76,7 @@ router.post("/", auth, async (req, res) => {
           title,
           organization,
           description,
+          imageUrl: imageUrl || "",
         });
 
     res.json(experience);
@@ -84,7 +87,8 @@ router.post("/", auth, async (req, res) => {
 });
 
 router.put("/:id", auth, async (req, res) => {
-  const { section, year, title, organization, description } = req.body;
+  const { section, year, title, organization, description, imageUrl } =
+    req.body;
   const updates = {};
 
   if (section !== undefined) updates.section = section;
@@ -92,6 +96,7 @@ router.put("/:id", auth, async (req, res) => {
   if (title !== undefined) updates.title = title;
   if (organization !== undefined) updates.organization = organization;
   if (description !== undefined) updates.description = description;
+  if (imageUrl !== undefined) updates.imageUrl = imageUrl;
 
   try {
     if (!useMongo()) {

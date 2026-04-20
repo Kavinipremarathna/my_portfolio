@@ -12,6 +12,7 @@ const ExperienceSchema = new mongoose.Schema(
     title: { type: String, default: "" },
     organization: { type: String, default: "" },
     description: { type: String, default: "" },
+    imageUrl: { type: String, default: "" },
   },
   {
     timestamps: true,

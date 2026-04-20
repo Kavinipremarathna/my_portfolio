@@ -53,6 +53,7 @@ const emptyExperienceForm = {
   title: "",
   organization: "",
   description: "",
+  imageUrl: "",
 };
 
 const emptyHeroForm = {
@@ -345,6 +346,7 @@ const Dashboard = ({ token, setToken }) => {
         title: experience.title || "",
         organization: experience.organization || "",
         description: experience.description || "",
+        imageUrl: experience.imageUrl || "",
       });
       setCurrentId(experience._id);
     } else {
@@ -478,6 +480,7 @@ const Dashboard = ({ token, setToken }) => {
           title: experienceForm.title.trim(),
           organization: experienceForm.organization.trim(),
           description: experienceForm.description.trim(),
+          imageUrl: experienceForm.imageUrl.trim(),
         };
 
         if (currentId) {
@@ -1405,6 +1408,24 @@ const Dashboard = ({ token, setToken }) => {
                         }
                       />
                     </div>
+
+                    <div>
+                      <label className="block text-slate-400 mb-1">
+                        Photo URL (optional)
+                      </label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        placeholder="https://..."
+                        value={experienceForm.imageUrl}
+                        onChange={(e) =>
+                          setExperienceForm({
+                            ...experienceForm,
+                            imageUrl: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
                   </>
                 ) : (
                   <>
@@ -2016,6 +2037,15 @@ const Dashboard = ({ token, setToken }) => {
                         key={item._id}
                         className="rounded-xl border border-white/10 bg-primary/50 p-4"
                       >
+                        {item.imageUrl && (
+                          <div className="mb-4 h-40 overflow-hidden rounded-lg bg-black/20">
+                            <img
+                              src={item.imageUrl}
+                              alt={item.title}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                        )}
                         <div className="flex flex-wrap items-start justify-between gap-4">
                           <div>
                             <p className="text-accent text-sm font-medium">

@@ -146,6 +146,7 @@ function normalizeExperience(experience) {
     title: String(experience.title || "").trim(),
     organization: String(experience.organization || "").trim(),
     description: String(experience.description || "").trim(),
+    imageUrl: String(experience.imageUrl || "").trim(),
     createdAt: experience.createdAt || new Date().toISOString(),
   };
 }
