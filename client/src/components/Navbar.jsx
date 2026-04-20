@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, Code, ArrowRight, Moon, Sun } from "lucide-react";
+import { Menu, X, Code, ArrowRight } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { motion as Motion } from "framer-motion";
 
@@ -7,16 +7,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
-    return savedTheme === "light" ? "light" : "dark";
-  });
   const { pathname } = useLocation();
   const isAboutPage = pathname === "/about";
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("light", theme === "light");
-  }, [theme]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,15 +24,6 @@ const Navbar = () => {
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const toggleTheme = () => {
-    setTheme((prev) => {
-      const nextTheme = prev === "dark" ? "light" : "dark";
-      document.documentElement.classList.toggle("light", nextTheme === "light");
-      localStorage.setItem("theme", nextTheme);
-      return nextTheme;
-    });
-  };
 
   const navLinks = isAboutPage
     ? [
@@ -106,15 +89,6 @@ const Navbar = () => {
             </a>
           ))}
 
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-200 transition-all hover:border-accent/40 hover:text-accent"
-            aria-label="Toggle theme"
-          >
-            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-
           {!isAboutPage && (
             <a
               href="/about"
@@ -165,14 +139,6 @@ const Navbar = () => {
                 {link.name}
               </a>
             ))}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200"
-            >
-              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-              {theme === "dark" ? "Light mode" : "Dark mode"}
-            </button>
             {!isAboutPage && (
               <a
                 href="/about"

@@ -1,38 +1,42 @@
 [
   {
+    "_id": "experience-3",
+    "section": "experience",
+    "order": 1,
+    "year": "2026",
+    "title": "Member Coordinator",
+    "organization": "Sri Lanka Inspire -IEEE Young Professionals Sri Lanka",
+    "description": "",
+    "createdAt": "2026-04-10T00:00:02.000Z"
+  },
+  {
+    "_id": "experience-4",
+    "section": "experience",
+    "order": 2,
+    "year": "2026",
+    "title": "Volunteer Coordinator",
+    "organization": "IEEE WIE Student Branch affinity group of Sabaragamuwa University of Sri Lanka",
+    "description": "",
+    "createdAt": "2026-04-10T00:00:03.000Z"
+  },
+  {
     "_id": "experience-1",
     "section": "education",
-    "year": "2022 - Present",
+    "order": 1,
+    "year": "2023 - Present",
     "title": "BSc (Hons) in Software Engineering",
-    "organization": "University Name (e.g., SLIIT, IIT)",
+    "organization": "Sabaragauwa University of Sri Lanka",
     "description": "Currently pursuing undergraduate degree. Focusing on Full Stack Development, Data Structures, and Algorithms.",
     "createdAt": "2026-04-10T00:00:00.000Z"
   },
   {
     "_id": "experience-2",
     "section": "education",
-    "year": "2020 - 2022",
+    "order": 2,
+    "year": "2009 - 2021",
     "title": "G.C.E Advanced Level",
-    "organization": "School Name",
-    "description": "Physical Science Stream. Achieved high distinction.",
+    "organization": "Sri Sumangala Balika Maha Vidyalaya",
+    "description": "Physical Science Stream.(Z score-1.4185)",
     "createdAt": "2026-04-10T00:00:01.000Z"
-  },
-  {
-    "_id": "experience-3",
-    "section": "experience",
-    "year": "2024",
-    "title": "Full Stack Developer Intern",
-    "organization": "Tech Company Name",
-    "description": "Assisted in building RESTful APIs using Node.js and Express. Developed responsive frontend UI with React.",
-    "createdAt": "2026-04-10T00:00:02.000Z"
-  },
-  {
-    "_id": "experience-4",
-    "section": "experience",
-    "year": "2023",
-    "title": "Freelance Web Developer",
-    "organization": "Self-Employed",
-    "description": "Developed custom websites for small businesses using HTML, CSS, and JavaScript. Delivered high-quality, responsive designs.",
-    "createdAt": "2026-04-10T00:00:03.000Z"
   }
 ]
