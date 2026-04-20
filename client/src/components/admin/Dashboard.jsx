@@ -53,7 +53,6 @@ const emptyExperienceForm = {
   title: "",
   organization: "",
   description: "",
-  imageUrl: "",
 };
 
 const emptyHeroForm = {
@@ -73,8 +72,8 @@ const emptyHeroForm = {
   focusStat: "Full-Stack",
   stackStat: "React + Node",
   styleStat: "Clean & Modern",
-  githubUrl: "https://github.com",
-  linkedinUrl: "https://linkedin.com",
+  githubUrl: "https://github.com/Kavinipremarathna",
+  linkedinUrl: "https://www.linkedin.com/in/kavini-premarathna",
   emailUrl: "mailto:kavinipremarathna@gmail.com",
   profileImageUrl: "",
 };
@@ -105,73 +104,6 @@ const Dashboard = ({ token, setToken }) => {
   const [articleForm, setArticleForm] = useState(emptyArticleForm);
   const [experienceForm, setExperienceForm] = useState(emptyExperienceForm);
   const [heroForm, setHeroForm] = useState(emptyHeroForm);
-
-  const readExperienceImageAsDataUrl = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        const image = new Image();
-
-        image.onload = () => {
-          const maxSide = 1400;
-          const scale = Math.min(
-            1,
-            maxSide / image.width || 1,
-            maxSide / image.height || 1,
-          );
-          const width = Math.max(1, Math.round(image.width * scale));
-          const height = Math.max(1, Math.round(image.height * scale));
-
-          const canvas = document.createElement("canvas");
-          canvas.width = width;
-          canvas.height = height;
-          const context = canvas.getContext("2d");
-
-          if (!context) {
-            reject(new Error("Unable to process image"));
-            return;
-          }
-
-          context.drawImage(image, 0, 0, width, height);
-          resolve(canvas.toDataURL("image/jpeg", 0.82));
-        };
-
-        image.onerror = () => reject(new Error("Invalid image file"));
-        image.src = String(reader.result || "");
-      };
-
-      reader.onerror = () => reject(new Error("Unable to read image file"));
-      reader.readAsDataURL(file);
-    });
-
-  const handleExperienceImageUpload = async (event) => {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      alert("Please select an image file.");
-      return;
-    }
-
-    if (file.size > 8 * 1024 * 1024) {
-      alert("Please use an image smaller than 8MB.");
-      return;
-    }
-
-    try {
-      const dataUrl = await readExperienceImageAsDataUrl(file);
-      setExperienceForm((previous) => ({
-        ...previous,
-        imageUrl: dataUrl,
-      }));
-    } catch (error) {
-      console.error(error);
-      alert("Could not process the selected image.");
-    }
-  };
 
   useEffect(() => {
     const loadDashboardData = async () => {
@@ -413,7 +345,6 @@ const Dashboard = ({ token, setToken }) => {
         title: experience.title || "",
         organization: experience.organization || "",
         description: experience.description || "",
-        imageUrl: experience.imageUrl || "",
       });
       setCurrentId(experience._id);
     } else {
@@ -547,21 +478,41 @@ const Dashboard = ({ token, setToken }) => {
           title: experienceForm.title.trim(),
           organization: experienceForm.organization.trim(),
           description: experienceForm.description.trim(),
-          imageUrl: experienceForm.imageUrl.trim(),
         };
 
+        let savedExperience = null;
+
         if (currentId) {
-          await axios.put(
+          const response = await axios.put(
             `${API_URL}/api/experiences/${currentId}`,
             experienceData,
             config,
           );
+          savedExperience = response.data || experienceData;
         } else {
-          await axios.post(
+          const response = await axios.post(
             `${API_URL}/api/experiences`,
             experienceData,
             config,
           );
+          savedExperience = response.data || experienceData;
+        }
+
+        if (savedExperience) {
+          setExperiences((previous) => {
+            const next = Array.isArray(previous) ? [...previous] : [];
+            const existingIndex = next.findIndex(
+              (item) => String(item._id) === String(savedExperience._id),
+            );
+
+            if (existingIndex >= 0) {
+              next[existingIndex] = savedExperience;
+            } else {
+              next.unshift(savedExperience);
+            }
+
+            return next;
+          });
         }
 
         refreshExperiences();
@@ -616,39 +567,8 @@ const Dashboard = ({ token, setToken }) => {
         localStorage.removeItem("token");
         setToken(null);
         alert("Your session expired. Please log in again.");
-        return;
       }
-
-      const message = err.response?.data?.msg || "Error saving record";
-      alert(message);
-    }
-  };
-
-  const handleDeleteProject = async (id) => {
-    if (!window.confirm("Delete this project?")) return;
-
-    try {
-      await axios.delete(`${API_URL}/api/projects/${id}`, {
-        headers: { "x-auth-token": token },
-      });
-      refreshProjects();
-    } catch (err) {
-      console.error(err);
-      alert("Error deleting project");
-    }
-  };
-
-  const handleDeleteSkill = async (id) => {
-    if (!window.confirm("Delete this skill?")) return;
-
-    try {
-      await axios.delete(`${API_URL}/api/skills/${id}`, {
-        headers: { "x-auth-token": token },
-      });
-      refreshSkills();
-    } catch (err) {
-      console.error(err);
-      alert("Error deleting skill");
+      refreshGallery();
     }
   };
 
@@ -691,6 +611,34 @@ const Dashboard = ({ token, setToken }) => {
     } catch (err) {
       console.error(err);
       alert("Error deleting experience entry");
+    }
+  };
+
+  const handleDeleteProject = async (id) => {
+    if (!window.confirm("Delete this project?")) return;
+
+    try {
+      await axios.delete(`${API_URL}/api/projects/${id}`, {
+        headers: { "x-auth-token": token },
+      });
+      refreshProjects();
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting project");
+    }
+  };
+
+  const handleDeleteSkill = async (id) => {
+    if (!window.confirm("Delete this skill?")) return;
+
+    try {
+      await axios.delete(`${API_URL}/api/skills/${id}`, {
+        headers: { "x-auth-token": token },
+      });
+      refreshSkills();
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting skill");
     }
   };
 
@@ -1475,64 +1423,6 @@ const Dashboard = ({ token, setToken }) => {
                         }
                       />
                     </div>
-
-                    <div>
-                      <label className="block text-slate-400 mb-1">
-                        Upload Photo (optional)
-                      </label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="input-field"
-                        onChange={handleExperienceImageUpload}
-                      />
-                      <p className="mt-2 text-xs text-slate-500">
-                        Select an image to upload. It will be optimized and
-                        shown on the live site.
-                      </p>
-                    </div>
-
-                    <div>
-                      <label className="block text-slate-400 mb-1">
-                        Or Paste Photo URL
-                      </label>
-                      <input
-                        type="text"
-                        className="input-field"
-                        placeholder="https://..."
-                        value={experienceForm.imageUrl}
-                        onChange={(e) =>
-                          setExperienceForm({
-                            ...experienceForm,
-                            imageUrl: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-
-                    {experienceForm.imageUrl && (
-                      <div className="rounded-xl border border-white/10 bg-primary/40 p-4">
-                        <div className="mb-3 h-40 overflow-hidden rounded-lg bg-black/20">
-                          <img
-                            src={experienceForm.imageUrl}
-                            alt="Experience preview"
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setExperienceForm({
-                              ...experienceForm,
-                              imageUrl: "",
-                            })
-                          }
-                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-300 transition-colors hover:text-red-400"
-                        >
-                          Remove photo
-                        </button>
-                      </div>
-                    )}
                   </>
                 ) : (
                   <>

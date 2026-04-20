@@ -127,6 +127,14 @@ const sortExperiences = (experiences) => {
   });
 };
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "16mb",
+    },
+  },
+};
+
 const readExperiences = () => {
   try {
     const filePath = resolveExperienceFile();
@@ -250,7 +258,7 @@ export default function handler(req, res) {
 
     const { section, year, title, organization, description, imageUrl } =
       req.body || {};
-    if (!year || !title || !organization || !description) {
+    if (!year || !title || !organization) {
       return res.status(400).json({ msg: "Please enter all fields" });
     }
 
@@ -268,7 +276,7 @@ export default function handler(req, res) {
       year,
       title,
       organization,
-      description,
+      description: description || "",
       imageUrl,
     });
 

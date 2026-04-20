@@ -39,8 +39,8 @@ const defaultHeroConfig = {
     style: "Clean & Modern",
   },
   social: {
-    github: "https://github.com",
-    linkedin: "https://linkedin.com",
+    github: "https://github.com/Kavinipremarathna",
+    linkedin: "https://www.linkedin.com/in/kavini-premarathna",
     email: "mailto:kavinipremarathna@gmail.com",
   },
   profileImageUrl: "",
@@ -57,6 +57,12 @@ const Hero = () => {
     Array.isArray(heroConfig.roles) && heroConfig.roles.length > 0
       ? heroConfig.roles
       : defaultHeroConfig.roles;
+  const heroEmailLink = String(
+    heroConfig.social?.email || defaultHeroConfig.social.email,
+  ).trim();
+  const normalizedHeroEmailLink = heroEmailLink.startsWith("mailto:")
+    ? heroEmailLink
+    : `mailto:${heroEmailLink}`;
 
   useEffect(() => {
     const loadHeroConfig = async () => {
@@ -251,9 +257,7 @@ const Hero = () => {
               <FiLinkedin size={24} />
             </Motion.a>
             <Motion.a
-              href={
-                heroConfig.social?.email || "mailto:kavinipremarathna@gmail.com"
-              }
+              href={normalizedHeroEmailLink}
               whileHover={reduceMotion ? {} : { y: -4, scale: 1.08 }}
               className="hover:text-white transition-colors"
             >

@@ -42,7 +42,7 @@ router.post("/", auth, async (req, res) => {
   const { section, year, title, organization, description, imageUrl } =
     req.body;
 
-  if (!year || !title || !organization || !description) {
+  if (!year || !title || !organization) {
     return res.status(400).json({ msg: "Please enter all fields" });
   }
 
@@ -67,7 +67,7 @@ router.post("/", auth, async (req, res) => {
           order: nextOrder,
           title,
           organization,
-          description,
+          description: description || "",
           imageUrl: imageUrl || "",
         }).save()
       : fileStore.createExperience({
@@ -75,7 +75,7 @@ router.post("/", auth, async (req, res) => {
           year,
           title,
           organization,
-          description,
+          description: description || "",
           imageUrl: imageUrl || "",
         });
 

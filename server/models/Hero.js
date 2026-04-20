@@ -20,9 +20,15 @@ const HeroSchema = new mongoose.Schema({
     style: { type: String, default: "Clean & Modern" },
   },
   social: {
-    github: { type: String, default: "https://github.com" },
-    linkedin: { type: String, default: "https://linkedin.com" },
-    email: { type: String, default: "mailto:email@example.com" },
+    github: {
+      type: String,
+      default: "https://github.com/Kavinipremarathna",
+    },
+    linkedin: {
+      type: String,
+      default: "https://www.linkedin.com/in/kavini-premarathna",
+    },
+    email: { type: String, default: "mailto:kavinipremarathna@gmail.com" },
   },
   profileImageUrl: { type: String, default: "" },
 });

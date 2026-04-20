@@ -142,15 +142,6 @@ const Experience = () => {
                       transition={{ duration: 0.5, delay: index * 0.08 }}
                       className="relative overflow-hidden rounded-2xl border border-white/5 bg-primary/55 p-5"
                     >
-                      {item.imageUrl && (
-                        <div className="mb-4 h-44 overflow-hidden rounded-xl bg-black/20">
-                          <img
-                            src={item.imageUrl}
-                            alt={item.title}
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
-                      )}
                       <Motion.span
                         className="absolute -left-[41px] top-6 w-5 h-5 bg-accent rounded-full border-4 border-secondary"
                         whileHover={{ scale: 1.18 }}

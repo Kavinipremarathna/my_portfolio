@@ -35,9 +35,9 @@ const defaultHeroConfig = {
     style: "Clean & Modern",
   },
   social: {
-    github: "https://github.com",
-    linkedin: "https://linkedin.com",
-    email: "mailto:email@example.com",
+    github: "https://github.com/Kavinipremarathna",
+    linkedin: "https://www.linkedin.com/in/kavini-premarathna",
+    email: "mailto:kavinipremarathna@gmail.com",
   },
   profileImageUrl: "",
 };

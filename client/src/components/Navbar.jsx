@@ -31,30 +31,20 @@ const Navbar = () => {
         { name: "About", href: "/about" },
         { name: "Gallery", href: "/gallery" },
         { name: "Skills", href: "/skills" },
-        { name: "Experience", href: "/#experience" },
+        { name: "Experience", href: "/experience" },
         { name: "Projects", href: "/projects" },
         { name: "Contact", href: "/contact" },
         { name: "Blogs", href: "/blog" },
-        {
-          name: "Medium",
-          href: "https://medium.com/@kavinipremarathna",
-          external: true,
-        },
       ]
     : [
         { name: "Home", href: "/#home" },
         { name: "About", href: "/about" },
         { name: "Gallery", href: "/gallery" },
         { name: "Skills", href: "/skills" },
-        { name: "Experience", href: "/#experience" },
+        { name: "Experience", href: "/experience" },
         { name: "Projects", href: "/projects" },
         { name: "Contact", href: "/contact" },
         { name: "Blogs", href: "/blog" },
-        {
-          name: "Medium",
-          href: "https://medium.com/@kavinipremarathna",
-          external: true,
-        },
       ];
 
   return (

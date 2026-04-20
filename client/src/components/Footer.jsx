@@ -5,7 +5,7 @@ const quickLinks = [
   { label: "Home", href: "/#home" },
   { label: "About", href: "/about" },
   { label: "Skills", href: "/skills" },
-  { label: "Experience", href: "/#experience" },
+  { label: "Experience", href: "/experience" },
   { label: "Projects", href: "/#projects" },
   { label: "Contact", href: "/#contact" },
 ];
@@ -43,7 +43,7 @@ const Footer = () => {
             </p>
             <div className="mt-6 flex items-center gap-3 text-slate-400">
               <a
-                href="https://github.com"
+                href="https://github.com/Kavinipremarathna"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all hover:border-accent/40 hover:text-accent hover:-translate-y-0.5"
@@ -52,7 +52,7 @@ const Footer = () => {
                 <Github size={18} />
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/kavini-premarathna"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all hover:border-accent/40 hover:text-accent hover:-translate-y-0.5"
