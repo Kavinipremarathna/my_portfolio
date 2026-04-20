@@ -1,5 +1,5 @@
 import React from "react";
-import { Github, Linkedin, Mail, Phone, MapPin, Heart } from "lucide-react";
+import { Github, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 
 const quickLinks = [
   { label: "Home", href: "/#home" },
@@ -129,10 +129,6 @@ const Footer = () => {
 
         <div className="mt-12 border-t border-white/10 pt-6 flex flex-col items-center text-center gap-3 text-sm text-slate-400">
           <p>© {year} Kavini Premarathna. All rights reserved.</p>
-          <p className="inline-flex items-center gap-2">
-            Designed & Built with{" "}
-            <Heart size={14} className="text-red-500 fill-current" />
-          </p>
         </div>
       </div>
     </footer>

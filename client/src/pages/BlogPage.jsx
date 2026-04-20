@@ -185,12 +185,6 @@ const BlogPage = () => {
                 >
                   See My Medium Articles <ArrowUpRight size={14} />
                 </a>
-
-                <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300 leading-7">
-                  Tip: In admin, create articles with source set to
-                  <span className="text-accent"> medium </span>
-                  and optionally include a Medium URL for reference.
-                </div>
               </Motion.aside>
             </div>
 
