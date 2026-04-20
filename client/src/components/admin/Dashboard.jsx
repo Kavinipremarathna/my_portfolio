@@ -106,6 +106,73 @@ const Dashboard = ({ token, setToken }) => {
   const [experienceForm, setExperienceForm] = useState(emptyExperienceForm);
   const [heroForm, setHeroForm] = useState(emptyHeroForm);
 
+  const readExperienceImageAsDataUrl = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const image = new Image();
+
+        image.onload = () => {
+          const maxSide = 1400;
+          const scale = Math.min(
+            1,
+            maxSide / image.width || 1,
+            maxSide / image.height || 1,
+          );
+          const width = Math.max(1, Math.round(image.width * scale));
+          const height = Math.max(1, Math.round(image.height * scale));
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const context = canvas.getContext("2d");
+
+          if (!context) {
+            reject(new Error("Unable to process image"));
+            return;
+          }
+
+          context.drawImage(image, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", 0.82));
+        };
+
+        image.onerror = () => reject(new Error("Invalid image file"));
+        image.src = String(reader.result || "");
+      };
+
+      reader.onerror = () => reject(new Error("Unable to read image file"));
+      reader.readAsDataURL(file);
+    });
+
+  const handleExperienceImageUpload = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file.");
+      return;
+    }
+
+    if (file.size > 8 * 1024 * 1024) {
+      alert("Please use an image smaller than 8MB.");
+      return;
+    }
+
+    try {
+      const dataUrl = await readExperienceImageAsDataUrl(file);
+      setExperienceForm((previous) => ({
+        ...previous,
+        imageUrl: dataUrl,
+      }));
+    } catch (error) {
+      console.error(error);
+      alert("Could not process the selected image.");
+    }
+  };
+
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
@@ -1411,7 +1478,23 @@ const Dashboard = ({ token, setToken }) => {
 
                     <div>
                       <label className="block text-slate-400 mb-1">
-                        Photo URL (optional)
+                        Upload Photo (optional)
+                      </label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="input-field"
+                        onChange={handleExperienceImageUpload}
+                      />
+                      <p className="mt-2 text-xs text-slate-500">
+                        Select an image to upload. It will be optimized and
+                        shown on the live site.
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 mb-1">
+                        Or Paste Photo URL
                       </label>
                       <input
                         type="text"
@@ -1426,6 +1509,30 @@ const Dashboard = ({ token, setToken }) => {
                         }
                       />
                     </div>
+
+                    {experienceForm.imageUrl && (
+                      <div className="rounded-xl border border-white/10 bg-primary/40 p-4">
+                        <div className="mb-3 h-40 overflow-hidden rounded-lg bg-black/20">
+                          <img
+                            src={experienceForm.imageUrl}
+                            alt="Experience preview"
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setExperienceForm({
+                              ...experienceForm,
+                              imageUrl: "",
+                            })
+                          }
+                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-300 transition-colors hover:text-red-400"
+                        >
+                          Remove photo
+                        </button>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>

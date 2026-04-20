@@ -77,6 +77,7 @@ const normalizeExperience = (experience) => ({
   title: String(experience.title || "").trim(),
   organization: String(experience.organization || "").trim(),
   description: String(experience.description || "").trim(),
+  imageUrl: String(experience.imageUrl || "").trim(),
   createdAt: experience.createdAt || new Date().toISOString(),
 });
 
@@ -247,7 +248,8 @@ export default function handler(req, res) {
   if (req.method === "POST") {
     if (!requireAuth(req, res)) return;
 
-    const { section, year, title, organization, description } = req.body || {};
+    const { section, year, title, organization, description, imageUrl } =
+      req.body || {};
     if (!year || !title || !organization || !description) {
       return res.status(400).json({ msg: "Please enter all fields" });
     }
@@ -267,6 +269,7 @@ export default function handler(req, res) {
       title,
       organization,
       description,
+      imageUrl,
     });
 
     try {
