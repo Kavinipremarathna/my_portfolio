@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { GraduationCap, Briefcase, ArrowUpRight } from "lucide-react";
 import { API_URL } from "../config/api";
 
@@ -130,7 +130,7 @@ const Experience = () => {
 
                 <div className="space-y-6 border-l-2 border-slate-700 ml-3 pl-8 relative">
                   {items.map((item, index) => (
-                    <motion.div
+                    <Motion.div
                       key={item._id}
                       initial={{
                         opacity: 0,
@@ -142,7 +142,7 @@ const Experience = () => {
                       transition={{ duration: 0.5, delay: index * 0.08 }}
                       className="relative rounded-2xl border border-white/5 bg-primary/55 p-5"
                     >
-                      <motion.span
+                      <Motion.span
                         className="absolute -left-[41px] top-6 w-5 h-5 bg-accent rounded-full border-4 border-secondary"
                         whileHover={{ scale: 1.18 }}
                       />
@@ -166,7 +166,7 @@ const Experience = () => {
                       <p className="text-slate-300 leading-7">
                         {item.description}
                       </p>
-                    </motion.div>
+                    </Motion.div>
                   ))}
 
                   {items.length === 0 && (

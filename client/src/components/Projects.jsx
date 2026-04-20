@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import axios from "axios";
 import { FiGithub, FiExternalLink, FiArrowUpRight } from "react-icons/fi";
 import { API_URL } from "../config/api";
@@ -52,7 +52,7 @@ const Projects = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.length > 0 ? (
               projects.map((project, index) => (
-                <motion.div
+                <Motion.div
                   key={project._id}
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -122,7 +122,7 @@ const Projects = () => {
                       ))}
                     </div>
                   </div>
-                </motion.div>
+                </Motion.div>
               ))
             ) : (
               <div className="col-span-3 text-center text-slate-500">

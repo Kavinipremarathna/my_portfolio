@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X, Code, ArrowRight, Moon, Sun } from "lucide-react";
 import { useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [theme, setTheme] = useState("dark");
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+    return savedTheme === "light" ? "light" : "dark";
+  });
   const { pathname } = useLocation();
   const isAboutPage = pathname === "/about";
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const nextTheme = savedTheme === "light" ? "light" : "dark";
-    setTheme(nextTheme);
-    document.documentElement.classList.toggle("light", nextTheme === "light");
-  }, []);
+    document.documentElement.classList.toggle("light", theme === "light");
+  }, [theme]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,7 +74,7 @@ const Navbar = () => {
 
   return (
     <nav className="fixed w-full z-50">
-      <motion.div
+      <Motion.div
         className="absolute top-0 left-0 h-[2px] bg-gradient-to-r from-cyan-300 via-accent to-indigo-400"
         style={{ width: `${scrollProgress}%` }}
         transition={{ duration: 0.2 }}

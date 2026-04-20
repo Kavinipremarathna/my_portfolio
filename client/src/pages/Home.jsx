@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion as Motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import About from "../components/About";
@@ -20,14 +20,14 @@ const Home = () => {
     <>
       <AnimatePresence>
         {loading && (
-          <motion.div
+          <Motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.45 }}
             className="fixed inset-0 z-[100] flex items-center justify-center bg-primary"
           >
             <div className="flex flex-col items-center gap-6">
-              <motion.div
+              <Motion.div
                 animate={{ rotate: 360 }}
                 transition={{ repeat: Infinity, duration: 1.4, ease: "linear" }}
                 className="h-16 w-16 rounded-full border-2 border-accent/30 border-t-accent"
@@ -36,11 +36,11 @@ const Home = () => {
                 Loading Portfolio
               </p>
             </div>
-          </motion.div>
+          </Motion.div>
         )}
       </AnimatePresence>
 
-      <motion.div
+      <Motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: loading ? 0 : 1, y: loading ? 12 : 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
@@ -53,7 +53,7 @@ const Home = () => {
         <Projects />
         <Contact />
         <Footer />
-      </motion.div>
+      </Motion.div>
     </>
   );
 };

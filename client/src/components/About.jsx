@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Award, Code2, Rocket, ArrowRight } from "lucide-react";
 
@@ -10,7 +10,7 @@ const About = () => {
       className="py-24 bg-gradient-to-b from-secondary to-primary"
     >
       <div className="container mx-auto px-6">
-        <motion.div
+        <Motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -86,7 +86,7 @@ const About = () => {
               </div>
             </div>
           </div>
-        </motion.div>
+        </Motion.div>
       </div>
     </section>
   );

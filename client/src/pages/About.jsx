@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { ArrowRight, Mail, MapPin, Github, Linkedin } from "lucide-react";
@@ -56,7 +56,7 @@ const AboutPage = () => {
           <div className="absolute inset-0 opacity-30 bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:60px_60px]" />
           <div className="container mx-auto px-6 py-20 relative">
             <div className="max-w-6xl mx-auto grid gap-12 lg:grid-cols-[1.05fr_0.95fr] items-center">
-              <motion.div
+              <Motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7 }}
@@ -107,9 +107,9 @@ const AboutPage = () => {
                     </div>
                   ))}
                 </div>
-              </motion.div>
+              </Motion.div>
 
-              <motion.div
+              <Motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1 }}
@@ -151,7 +151,7 @@ const AboutPage = () => {
                     <Linkedin size={22} />
                   </a>
                 </div>
-              </motion.div>
+              </Motion.div>
             </div>
           </div>
         </section>
@@ -212,7 +212,7 @@ const AboutPage = () => {
 
             <div className="grid gap-5">
               {timeline.map((item, index) => (
-                <motion.div
+                <Motion.div
                   key={item.title}
                   initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -234,7 +234,7 @@ const AboutPage = () => {
                       {item.description}
                     </p>
                   </div>
-                </motion.div>
+                </Motion.div>
               ))}
             </div>
           </div>

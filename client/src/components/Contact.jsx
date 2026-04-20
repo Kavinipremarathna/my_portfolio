@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 
 const Contact = () => {
@@ -10,7 +10,7 @@ const Contact = () => {
       await navigator.clipboard.writeText(value);
       setCopiedField(type);
       setTimeout(() => setCopiedField(""), 1500);
-    } catch (error) {
+    } catch {
       setCopiedField("");
     }
   };
@@ -26,7 +26,7 @@ const Contact = () => {
         </div>
 
         <div className="flex flex-col md:flex-row gap-12 max-w-5xl mx-auto">
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -41,7 +41,7 @@ const Contact = () => {
             </p>
 
             <div className="space-y-6">
-              <motion.button
+              <Motion.button
                 type="button"
                 whileHover={{ y: -3 }}
                 onClick={() => handleCopy("email", "kavini@example.com")}
@@ -57,8 +57,8 @@ const Contact = () => {
                     {copiedField === "email" ? "• copied" : ""}
                   </p>
                 </div>
-              </motion.button>
-              <motion.button
+              </Motion.button>
+              <Motion.button
                 type="button"
                 whileHover={{ y: -3 }}
                 onClick={() => handleCopy("phone", "+94 77 123 4567")}
@@ -73,7 +73,7 @@ const Contact = () => {
                     +94 77 123 4567 {copiedField === "phone" ? "• copied" : ""}
                   </p>
                 </div>
-              </motion.button>
+              </Motion.button>
               <div className="flex items-center gap-4 text-slate-300">
                 <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-accent">
                   <MapPin size={24} />
@@ -84,9 +84,9 @@ const Contact = () => {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </Motion.div>
 
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             whileHover={{ y: -4 }}
@@ -131,7 +131,7 @@ const Contact = () => {
                 Send Message <Send size={18} />
               </button>
             </form>
-          </motion.div>
+          </Motion.div>
         </div>
       </div>
     </section>
