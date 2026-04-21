@@ -66,73 +66,54 @@ To create the initial admin account:
 
 3. Visit `http://localhost:5173/admin` to log in.
 
-## Deploy After Vercel Account Deletion (Firebase + Cloud Run)
+## Deploy on Render
 
-This project can be redeployed safely on Google Cloud:
+Use Render for both frontend and backend.
 
-- Frontend: Firebase Hosting
-- Backend: Cloud Run (using the existing Express server)
+- Backend: Render Web Service (Node/Express)
+- Frontend: Render Static Site (Vite build output)
 
 ### 1) Security First
 
-1. Enable 2-step verification on your Google account.
-2. Rotate old secrets used with Vercel (JWT secret, DB user password, API keys).
+1. Enable 2-step verification on GitHub and Render.
+2. Rotate old secrets used in previous hosting accounts.
 3. Remove any old Vercel tokens/webhooks from GitHub repository settings.
 
-### 2) Deploy Backend to Cloud Run
+### 2) Deploy Backend on Render (Web Service)
 
-From project root in PowerShell:
+1. Push your latest code to GitHub.
+2. In Render dashboard, click **New +** -> **Web Service**.
+3. Connect your repository and choose these settings:
 
-```powershell
-gcloud auth login
-gcloud config set project YOUR_GCP_PROJECT_ID
-gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com
-gcloud run deploy portfolio-api --source server --region us-central1 --allow-unauthenticated --set-env-vars MONGO_URI=YOUR_MONGO_URI,JWT_SECRET=YOUR_JWT_SECRET,NODE_ENV=production
-```
+- Root Directory: `server`
+- Environment: `Node`
+- Build Command: `npm install`
+- Start Command: `npm start`
 
-After deploy, copy the Cloud Run service URL (example: https://portfolio-api-xxxxx-uc.a.run.app).
+4. Add environment variables in Render:
 
-### 3) Deploy Frontend to Firebase Hosting
+- `MONGO_URI`
+- `JWT_SECRET`
+- `NODE_ENV=production`
 
-Install Firebase CLI and login:
+5. Deploy and copy the backend URL (example: `https://portfolio-api.onrender.com`).
 
-```powershell
-npm install -g firebase-tools
-firebase login
-```
+### 3) Deploy Frontend on Render (Static Site)
 
-Build frontend with your Cloud Run API URL:
+1. In Render dashboard, click **New +** -> **Static Site**.
+2. Connect the same repository and choose:
 
-```powershell
-cd client
-$env:VITE_API_URL="https://YOUR_CLOUD_RUN_URL"
-npm install
-npm run build
-cd ..
-```
+- Root Directory: `client`
+- Build Command: `npm install && npm run build`
+- Publish Directory: `dist`
 
-Initialize and deploy Hosting:
+3. Add environment variable:
 
-```powershell
-firebase init hosting
-firebase deploy --only hosting
-```
+- `VITE_API_URL=https://YOUR_BACKEND_ON_RENDER_URL`
 
-During firebase init hosting, use these values:
+4. Deploy.
 
-1. Select your Firebase project.
-2. Public directory: client/dist
-3. Configure as a single-page app: Yes
-4. Set up automatic builds/deploys with GitHub: optional
-5. Overwrite index.html: No
-
-### 4) Point Domain to Firebase
-
-1. In Firebase Hosting, add your custom domain.
-2. Update DNS records at your domain provider with Firebase values.
-3. Remove old Vercel DNS records.
-
-### 5) Verify
+### 4) Verify
 
 1. Open frontend URL and test all pages.
 2. Test API endpoints from the deployed frontend.
