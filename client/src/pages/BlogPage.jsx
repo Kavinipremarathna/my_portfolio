@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion as Motion } from "framer-motion";
-import { ArrowUpRight, BookOpen, Clock3, Sparkles } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { API_URL } from "../config/api";
+import { fallbackArticles } from "../data/fallbackArticles";
 
 const mediumProfileUrl = "https://medium.com/@kavinipremarathna";
 
@@ -17,10 +18,14 @@ const BlogPage = () => {
     const loadPosts = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/articles`);
-        setPosts(Array.isArray(response.data) ? response.data : []);
+        setPosts(
+          Array.isArray(response.data) && response.data.length > 0
+            ? response.data
+            : fallbackArticles,
+        );
       } catch (err) {
         console.error(err);
-        setPosts([]);
+        setPosts(fallbackArticles);
       } finally {
         setLoading(false);
       }
@@ -40,11 +45,6 @@ const BlogPage = () => {
     }
     return posts.filter((post) => post.category === activeFilter);
   }, [activeFilter, posts]);
-
-  const featuredPost = useMemo(
-    () => posts.find((post) => post.featured) || posts[0],
-    [posts],
-  );
 
   return (
     <div className="min-h-screen bg-primary text-text">
@@ -100,64 +100,7 @@ const BlogPage = () => {
 
         <section className="py-16 bg-primary">
           <div className="container mx-auto px-6 max-w-6xl">
-            <div className="grid gap-8 lg:grid-cols-[1.25fr_0.75fr]">
-              <Motion.article
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.45 }}
-                className="relative overflow-hidden rounded-3xl border border-white/10 bg-secondary/70 p-7 md:p-9"
-              >
-                <p className="text-xs uppercase tracking-[0.35em] text-accent">
-                  Featured Post
-                </p>
-                <h2 className="mt-4 text-3xl md:text-4xl font-black text-white leading-tight">
-                  {featuredPost?.title || "No featured article yet"}
-                </h2>
-                <p className="mt-5 text-slate-300 leading-8 text-lg">
-                  {featuredPost?.excerpt ||
-                    "Add your first full article from admin to populate this section."}
-                </p>
-
-                <div className="mt-7 flex flex-wrap items-center gap-4 text-sm text-slate-400">
-                  <span className="inline-flex items-center gap-2">
-                    <BookOpen size={15} className="text-accent" />
-                    {featuredPost?.category || "Writing"}
-                  </span>
-                  <span className="inline-flex items-center gap-2">
-                    <Clock3 size={15} className="text-accent" />
-                    {featuredPost?.readTime || "-"}
-                  </span>
-                  <span>{featuredPost?.date || "-"}</span>
-                </div>
-
-                <div className="mt-7 flex flex-wrap gap-2">
-                  {(featuredPost?.tags || []).map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-200"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="mt-9 flex flex-wrap gap-3">
-                  <a
-                    href={featuredPost ? `/blog/${featuredPost.slug}` : "/blog"}
-                    className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-primary transition-transform hover:-translate-y-0.5"
-                  >
-                    Read Full Article <ArrowUpRight size={15} />
-                  </a>
-                  <a
-                    href="/contact"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:border-accent/35"
-                  >
-                    Let&apos;s Discuss <ArrowUpRight size={15} />
-                  </a>
-                </div>
-              </Motion.article>
-
+            <div className="grid gap-8">
               <Motion.aside
                 initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -196,8 +139,25 @@ const BlogPage = () => {
               )}
 
               {!loading && visiblePosts.length === 0 && (
-                <div className="rounded-3xl border border-white/10 bg-secondary/60 p-6 text-slate-300 md:col-span-2 xl:col-span-3">
-                  No articles yet. Add one from the admin panel.
+                <div className="rounded-3xl border border-white/10 bg-[linear-gradient(135deg,rgba(14,165,233,0.12),rgba(15,23,42,0.8))] p-8 text-slate-200 md:col-span-2 xl:col-span-3">
+                  <p className="text-xs uppercase tracking-[0.35em] text-accent">
+                    No Match
+                  </p>
+                  <h3 className="mt-3 text-2xl font-bold text-white">
+                    No articles in this category yet
+                  </h3>
+                  <p className="mt-3 max-w-2xl text-slate-300 leading-7">
+                    Try switching back to{" "}
+                    <span className="text-white">All</span>
+                    to explore software engineering, cloud, and DevOps posts.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setActiveFilter("All")}
+                    className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent/35 bg-accent/10 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/20"
+                  >
+                    Show All Articles <ArrowUpRight size={14} />
+                  </button>
                 </div>
               )}
 
@@ -208,43 +168,59 @@ const BlogPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.45, delay: index * 0.05 }}
-                  className="rounded-3xl border border-white/10 bg-secondary/60 p-6"
+                  className="overflow-hidden rounded-3xl border border-white/10 bg-secondary/60 transition-transform duration-300 hover:-translate-y-1"
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-slate-300">
-                      {post.category}
-                    </span>
-                    <span className="text-xs text-slate-400">
-                      {post.readTime}
-                    </span>
-                  </div>
+                  {post.imageUrl ? (
+                    <div className="h-44 overflow-hidden border-b border-white/10 bg-black/20">
+                      <img
+                        src={post.imageUrl}
+                        alt={post.title}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-44 border-b border-white/10 bg-[linear-gradient(135deg,rgba(14,165,233,0.25),rgba(15,23,42,0.85))]" />
+                  )}
 
-                  <h3 className="mt-4 text-2xl font-bold text-white leading-tight">
-                    {post.title}
-                  </h3>
-                  <p className="mt-3 text-slate-300 leading-7">
-                    {post.excerpt}
-                  </p>
-
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {post.tags.slice(0, 3).map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-slate-200"
-                      >
-                        {tag}
+                  <div className="p-6">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-slate-300">
+                        {post.category}
                       </span>
-                    ))}
-                  </div>
+                      <span className="text-xs text-slate-400">
+                        {post.readTime}
+                      </span>
+                    </div>
 
-                  <div className="mt-6 flex items-center justify-between">
-                    <span className="text-xs text-slate-400">{post.date}</span>
-                    <a
-                      href={`/blog/${post.slug}`}
-                      className="inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline"
-                    >
-                      Read article <ArrowUpRight size={14} />
-                    </a>
+                    <h3 className="mt-4 text-2xl font-bold text-white leading-tight">
+                      {post.title}
+                    </h3>
+                    <p className="mt-3 text-slate-300 leading-7">
+                      {post.excerpt}
+                    </p>
+
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {post.tags.slice(0, 3).map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-slate-200"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="mt-6 flex items-center justify-between">
+                      <span className="text-xs text-slate-400">
+                        {post.date}
+                      </span>
+                      <a
+                        href={`/blog/${post.slug}`}
+                        className="inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline"
+                      >
+                        Read article <ArrowUpRight size={14} />
+                      </a>
+                    </div>
                   </div>
                 </Motion.article>
               ))}

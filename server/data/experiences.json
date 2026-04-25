@@ -4,20 +4,30 @@
     "section": "experience",
     "order": 1,
     "year": "2026",
-    "title": "Volunteer Coordinator",
-    "organization": "IEEE WIE Student Branch affinity group of Sabaragamuwa University of Sri Lanka",
-    "description": "",
+    "title": "Member Coordinator",
+    "organization": "SL Inspire, a national project under IEEE Young Professionals Sri Lanka",
+    "description": "Contributed to member engagement and coordination activities across a national-level youth professional initiative.",
     "createdAt": "2026-04-10T00:00:03.000Z"
   },
   {
     "_id": "experience-3",
     "section": "experience",
     "order": 2,
-    "year": "2026",
-    "title": "Member Coordinator",
-    "organization": "Sri Lanka Inspire -IEEE Young Professionals Sri Lanka",
-    "description": "",
+    "year": "2025/2026",
+    "title": "Volunteer Coordinator",
+    "organization": "IEEE WIE Student Branch Affinity Group of SUSL",
+    "description": "Supported volunteer planning and execution for student branch activities and outreach programs.",
     "createdAt": "2026-04-10T00:00:02.000Z"
+  },
+  {
+    "_id": "experience-5",
+    "section": "experience",
+    "order": 3,
+    "year": "2025",
+    "title": "Chair",
+    "organization": "Career Compass session organized by SL Inspire, Mini OC of Sabaragamuwa University of Sri Lanka",
+    "description": "Led and coordinated the Career Compass session, including planning, communication, and event execution.",
+    "createdAt": "2026-04-10T00:00:04.000Z"
   },
   {
     "_id": "experience-1",
@@ -25,7 +35,7 @@
     "order": 1,
     "year": "2023 - Present",
     "title": "BSc (Hons) in Software Engineering",
-    "organization": "Sabaragauwa University of Sri Lanka",
+    "organization": "Sabaragamuwa University of Sri Lanka",
     "description": "Currently pursuing undergraduate degree. Focusing on Full Stack Development, Data Structures, and Algorithms.",
     "createdAt": "2026-04-10T00:00:00.000Z"
   },
@@ -33,9 +43,9 @@
     "_id": "experience-2",
     "section": "education",
     "order": 2,
-    "year": "2009 - 2021",
+    "year": "2021",
     "title": "G.C.E Advanced Level",
-    "organization": "Sri Sumangala Balika Maha Vidyalaya",
+    "organization": "Sri Sumangala Balika Maha Vidyalaya, Panadura",
     "description": "Physical Science Stream.(Z score-1.4185)",
     "createdAt": "2026-04-10T00:00:01.000Z"
   }

@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { API_URL } from "../config/api";
+import { fallbackArticles } from "../data/fallbackArticles";
 
 const BlogArticlePage = () => {
   const { slug } = useParams();
@@ -19,10 +20,21 @@ const BlogArticlePage = () => {
         const response = await axios.get(
           `${API_URL}/api/articles/slug/${slug}`,
         );
-        setArticle(response.data || null);
+        const data = response.data;
+        const isValidArticle =
+          data &&
+          typeof data === "object" &&
+          !Array.isArray(data) &&
+          typeof data.slug === "string";
+
+        setArticle(
+          isValidArticle
+            ? data
+            : fallbackArticles.find((item) => item.slug === slug) || null,
+        );
       } catch (err) {
         console.error(err);
-        setArticle(null);
+        setArticle(fallbackArticles.find((item) => item.slug === slug) || null);
       } finally {
         setLoading(false);
       }
@@ -35,10 +47,14 @@ const BlogArticlePage = () => {
     const loadArticles = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/articles`);
-        setArticles(Array.isArray(response.data) ? response.data : []);
+        setArticles(
+          Array.isArray(response.data) && response.data.length > 0
+            ? response.data
+            : fallbackArticles,
+        );
       } catch (err) {
         console.error(err);
-        setArticles([]);
+        setArticles(fallbackArticles);
       }
     };
 

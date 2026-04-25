@@ -3,12 +3,22 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { resolveJsonFilePath } from "./storage.js";
 
+const bootstrapPasswordHash = (() => {
+  if (process.env.ADMIN_PASSWORD_HASH) {
+    return process.env.ADMIN_PASSWORD_HASH;
+  }
+
+  if (process.env.ADMIN_PASSWORD) {
+    return bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10);
+  }
+
+  return "$2b$10$pG9uCs3wdjzqKIOL/dBGf.pLyP3YlOMb8cK4CUvo6iXoZUIwsdafC";
+})();
+
 const bootstrapAdmin = {
   _id: "bootstrap-admin",
   username: process.env.ADMIN_USERNAME || "Kavini",
-  password:
-    process.env.ADMIN_PASSWORD_HASH ||
-    "$2b$10$pG9uCs3wdjzqKIOL/dBGf.pLyP3YlOMb8cK4CUvo6iXoZUIwsdafC",
+  password: bootstrapPasswordHash,
 };
 
 const resolveUsersFile = () => {
@@ -52,6 +62,8 @@ const getEffectiveUsers = () => {
 
   return [bootstrapAdmin];
 };
+
+const hasPersistedUsers = () => readUsers().length > 0;
 
 const writeUsers = (users) => {
   const usersFile = resolveUsersFile();
@@ -116,8 +128,7 @@ export default async function handler(req, res) {
   }
 
   if (route === "setup-status" && req.method === "GET") {
-    const users = getEffectiveUsers();
-    return json(res, 200, { setupRequired: users.length === 0 });
+    return json(res, 200, { setupRequired: !hasPersistedUsers() });
   }
 
   if (route === "setup" && req.method === "POST") {

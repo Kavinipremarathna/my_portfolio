@@ -22,7 +22,7 @@
   {
     "_id": "72f60cf5-c262-4b5d-a682-a828fe5bd3ec",
     "title": "Album Management System",
-    "description": "Album Management System is a full-stack web application designed to provide a seamless platform for browsing and managing music albums. The system features a modern, responsive user interface for end users and a secure admin dashboard for content management.\n\nThe application is built using a MERN-based architecture with cloud integration. The frontend, developed with React and Tailwind CSS, communicates with a Node.js and Express backend through RESTful APIs. Album data is stored in MongoDB Atlas, while album cover images are uploaded and delivered efficiently via Cloudinary.\n\nThe admin panel includes secure authentication using JSON Web Tokens (JWT), allowing administrators to perform full CRUD operations such as adding, editing, and deleting albums. The system is deployed using Vercel for the frontend and Render for the backend, ensuring scalability and real-world usability.",
+    "description": "Album Management System is a full-stack web application designed to provide a seamless platform for browsing and managing music albums. The system features a modern, responsive user interface for end users and a secure admin dashboard for content management.\n\nThe application is built using a MERN-based architecture with cloud integration. The frontend, developed with React and Tailwind CSS, communicates with a Node.js and Express backend through RESTful APIs. Album data is stored in MongoDB Atlas, while album cover images are uploaded and delivered efficiently via Cloudinary.\n\nThe admin panel includes secure authentication using JSON Web Tokens (JWT), allowing administrators to perform full CRUD operations such as adding, editing, and deleting albums. The system is deployed using Vercel for both the frontend and backend entry points, keeping the architecture simple and scalable.",
     "tags": [
       "React",
       "Node.js",
@@ -42,13 +42,7 @@
     "_id": "55957331-776f-4703-afc2-7a3ee1d3cdce",
     "title": "Real-Time Crypto Forecasting App",
     "description": "Developed and deployed an interactive time-series forecasting web application that predicts cryptocurrency prices using historical market data. The system enables users to dynamically select assets and adjust forecasting parameters, providing real-time visualization of actual versus predicted trends.\n\nImplemented a complete end-to-end pipeline including data fetching, preprocessing, sequence generation, model training, and performance evaluation using RMSE. Designed with a focus on usability, modularity, and practical application of machine learning concepts.",
-    "tags": [
-      "Python",
-      "Streamlit",
-      "Scikit-learn",
-      "Pandas",
-      "yFinance"
-    ],
+    "tags": ["Python", "Streamlit", "Scikit-learn", "Pandas", "yFinance"],
     "imageUrl": "https://www.image2url.com/r2/default/images/1776675595480-72607b43-ace2-430a-a241-9b59a2d3095d.png",
     "liveLink": "https://cryptoforecast-app.streamlit.app/",
     "repoLink": "https://github.com/Kavinipremarathna/CryptoForecast-App.git",
@@ -59,14 +53,7 @@
     "_id": "e2efc48b-7392-4232-9a8e-3eeeb73e12cf",
     "title": "ScanMe – AI-Based Body Posture Analysis System",
     "description": "Developed a web-based AI-powered posture analysis system that detects body alignment issues using full-body images. Integrated MediaPipe Pose and OpenCV to extract 33 skeletal landmarks and compute joint angles for identifying posture deviations such as shoulder imbalance, spine tilt, and hip misalignment.\n\nDesigned a seamless Laravel–Python integration pipeline where user-uploaded images are processed through a backend AI script, returning structured posture insights via a responsive web interface.\n\nImplemented rule-based classification algorithms achieving approximately 85% overall accuracy across multiple posture metrics. Built with scalability and usability in mind, featuring a mobile-friendly UI, chatbot guidance, and informative feedback reports.\n\n⚠️ Designed as a posture screening tool for awareness purposes, not for medical diagnosis.",
-    "tags": [
-      "Laravel",
-      "PHP",
-      "Python",
-      "MediaPipe",
-      "OpenCV",
-      "Bootstrap"
-    ],
+    "tags": ["Laravel", "PHP", "Python", "MediaPipe", "OpenCV", "Bootstrap"],
     "imageUrl": "https://www.image2url.com/r2/default/images/1776674828864-029c3f20-c89e-4c80-82ed-5c36b8b967fc.png",
     "liveLink": "",
     "repoLink": "https://github.com/AI-full-body-Image-analysis/AI-full-body-image-analysis",

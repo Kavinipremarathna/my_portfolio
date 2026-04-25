@@ -106,6 +106,7 @@ function normalizeArticle(article) {
     title: article.title,
     excerpt: article.excerpt || "",
     content: article.content || "",
+    imageUrl: article.imageUrl || "",
     category: article.category || "Engineering",
     readTime: article.readTime || "5 min read",
     date: article.date || new Date().toISOString().slice(0, 10),

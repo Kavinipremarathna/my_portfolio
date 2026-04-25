@@ -8,37 +8,48 @@ const fallbackExperiences = [
   {
     _id: "experience-1",
     section: "education",
-    year: "2022 - Present",
+    year: "2023 - Present",
     title: "BSc (Hons) in Software Engineering",
-    organization: "University Name (e.g., SLIIT, IIT)",
+    organization: "Sabaragamuwa University of Sri Lanka",
     description:
       "Currently pursuing undergraduate degree. Focusing on Full Stack Development, Data Structures, and Algorithms.",
   },
   {
     _id: "experience-2",
     section: "education",
-    year: "2020 - 2022",
+    year: "2021",
     title: "G.C.E Advanced Level",
-    organization: "School Name",
+    organization: "Sri Sumangala Balika Maha Vidyalaya, Panadura",
     description: "Physical Science Stream. Achieved high distinction.",
   },
   {
     _id: "experience-3",
     section: "experience",
-    year: "2024",
-    title: "Full Stack Developer Intern",
-    organization: "Tech Company Name",
+    year: "2026",
+    title: "Member Coordinator",
+    organization:
+      "SL Inspire, a national project under IEEE Young Professionals Sri Lanka",
     description:
-      "Assisted in building RESTful APIs using Node.js and Express. Developed responsive frontend UI with React.",
+      "Contributed to member engagement and coordination activities across a national-level youth professional initiative.",
   },
   {
     _id: "experience-4",
     section: "experience",
-    year: "2023",
-    title: "Freelance Web Developer",
-    organization: "Self-Employed",
+    year: "2025/2026",
+    title: "Volunteer Coordinator",
+    organization: "IEEE WIE Student Branch Affinity Group of SUSL",
     description:
-      "Developed custom websites for small businesses using HTML, CSS, and JavaScript. Delivered high-quality, responsive designs.",
+      "Supported volunteer planning and execution for student branch activities and outreach programs.",
+  },
+  {
+    _id: "experience-5",
+    section: "experience",
+    year: "2025",
+    title: "Chair",
+    organization:
+      "Career Compass session organized by SL Inspire, Mini OC of Sabaragamuwa University of Sri Lanka",
+    description:
+      "Led and coordinated the Career Compass session, including planning, communication, and event execution.",
   },
 ];
 

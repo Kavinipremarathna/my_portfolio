@@ -5,6 +5,7 @@ const ArticleSchema = new mongoose.Schema({
   title: { type: String, required: true },
   excerpt: { type: String, default: "" },
   content: { type: String, default: "" },
+  imageUrl: { type: String, default: "" },
   category: { type: String, default: "Engineering" },
   readTime: { type: String, default: "5 min read" },
   date: { type: String, default: () => new Date().toISOString().slice(0, 10) },

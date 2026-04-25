@@ -38,6 +38,7 @@ const emptyArticleForm = {
   slug: "",
   excerpt: "",
   content: "",
+  imageUrl: "",
   category: "Engineering",
   readTime: "5 min read",
   date: new Date().toISOString().slice(0, 10),
@@ -319,6 +320,7 @@ const Dashboard = ({ token, setToken }) => {
         slug: article.slug || "",
         excerpt: article.excerpt || "",
         content: article.content || "",
+        imageUrl: article.imageUrl || "",
         category: article.category || "Engineering",
         readTime: article.readTime || "5 min read",
         date: article.date || new Date().toISOString().slice(0, 10),
@@ -449,6 +451,7 @@ const Dashboard = ({ token, setToken }) => {
           slug: articleForm.slug.trim(),
           excerpt: articleForm.excerpt.trim(),
           content: articleForm.content.trim(),
+          imageUrl: articleForm.imageUrl.trim(),
           category: articleForm.category.trim(),
           readTime: articleForm.readTime.trim(),
           date: articleForm.date,
@@ -1229,6 +1232,24 @@ const Dashboard = ({ token, setToken }) => {
                       />
                     </div>
 
+                    <div>
+                      <label className="block text-slate-400 mb-1">
+                        Cover Image URL
+                      </label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        placeholder="https://images.unsplash.com/..."
+                        value={articleForm.imageUrl}
+                        onChange={(e) =>
+                          setArticleForm({
+                            ...articleForm,
+                            imageUrl: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <label className="block text-slate-400 mb-1">
@@ -1959,37 +1980,51 @@ const Dashboard = ({ token, setToken }) => {
             {articles.map((article) => (
               <div
                 key={article._id}
-                className="rounded-2xl border border-white/10 bg-secondary/70 p-5"
+                className="overflow-hidden rounded-2xl border border-white/10 bg-secondary/70"
               >
-                <p className="text-xs uppercase tracking-[0.3em] text-accent">
-                  {article.category || "Writing"}
-                </p>
-                <h4 className="mt-2 text-white font-bold leading-6">
-                  {article.title}
-                </h4>
-                <p className="mt-2 text-slate-400 text-sm line-clamp-3">
-                  {article.excerpt}
-                </p>
-                <p className="mt-3 text-xs text-slate-500">
-                  {article.readTime || "-"} • {article.date || "-"}
-                </p>
-                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-500">
-                  Source: {article.source || "original"}
-                </p>
+                {article.imageUrl ? (
+                  <div className="h-40 overflow-hidden border-b border-white/10 bg-black/20">
+                    <img
+                      src={article.imageUrl}
+                      alt={article.title}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="h-40 border-b border-white/10 bg-[linear-gradient(135deg,rgba(14,165,233,0.25),rgba(15,23,42,0.85))]" />
+                )}
 
-                <div className="mt-4 flex items-center justify-end gap-2">
-                  <button
-                    onClick={() => openArticleForm(article)}
-                    className="p-2 hover:bg-slate-700 rounded text-accent"
-                  >
-                    <Edit size={16} />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteArticle(article._id)}
-                    className="p-2 hover:bg-slate-700 rounded text-red-500"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                <div className="p-5">
+                  <p className="text-xs uppercase tracking-[0.3em] text-accent">
+                    {article.category || "Writing"}
+                  </p>
+                  <h4 className="mt-2 text-white font-bold leading-6">
+                    {article.title}
+                  </h4>
+                  <p className="mt-2 text-slate-400 text-sm line-clamp-3">
+                    {article.excerpt}
+                  </p>
+                  <p className="mt-3 text-xs text-slate-500">
+                    {article.readTime || "-"} • {article.date || "-"}
+                  </p>
+                  <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-500">
+                    Source: {article.source || "original"}
+                  </p>
+
+                  <div className="mt-4 flex items-center justify-end gap-2">
+                    <button
+                      onClick={() => openArticleForm(article)}
+                      className="p-2 hover:bg-slate-700 rounded text-accent"
+                    >
+                      <Edit size={16} />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteArticle(article._id)}
+                      className="p-2 hover:bg-slate-700 rounded text-red-500"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

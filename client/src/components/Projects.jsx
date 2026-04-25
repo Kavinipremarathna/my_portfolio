@@ -4,6 +4,103 @@ import axios from "axios";
 import { FiGithub, FiExternalLink, FiArrowUpRight } from "react-icons/fi";
 import { API_URL } from "../config/api";
 
+const fallbackProjects = [
+  {
+    _id: "46a91db7-be9e-462d-a1e8-d3d42b263112",
+    title: "TrustLayer AI – File & URL Threat Detection System",
+    description:
+      "Developed a containerized security analysis system that evaluates files and URLs to detect potential threats using heuristic-based risk scoring. The platform analyzes file signatures, identifies suspicious patterns, and inspects URLs for phishing indicators, providing real-time risk classification with actionable insights through an interactive web interface.",
+    tags: [
+      "FastAPI",
+      "Python",
+      "Docker",
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "File Signature Analysis",
+      "URL Parsing",
+    ],
+    imageUrl:
+      "https://www.image2url.com/r2/default/images/1776677286247-377582fe-cfef-4c09-b6b6-8862c18e2149.jpg",
+    liveLink: "",
+    repoLink: "https://github.com/Kavinipremarathna/trustlayer-ai.git",
+    featured: true,
+    createdAt: "2026-04-20T09:34:03.500Z",
+  },
+  {
+    _id: "72f60cf5-c262-4b5d-a682-a828fe5bd3ec",
+    title: "Album Management System",
+    description:
+      "Album Management System is a full-stack web application designed to provide a seamless platform for browsing and managing music albums. The system features a modern, responsive user interface for end users and a secure admin dashboard for content management.",
+    tags: [
+      "React",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "Tailwind CSS",
+      "JWT",
+      "Cloudinary",
+    ],
+    imageUrl:
+      "https://www.image2url.com/r2/default/images/1776677086493-7bd312d2-d461-411f-b22b-f9213f3d0463.png",
+    liveLink: "https://photography-dun-delta.vercel.app/",
+    repoLink: "https://github.com/Kavinipremarathna/Photography.git",
+    featured: true,
+    createdAt: "2026-04-20T09:30:28.983Z",
+  },
+  {
+    _id: "55957331-776f-4703-afc2-7a3ee1d3cdce",
+    title: "Real-Time Crypto Forecasting App",
+    description:
+      "Developed and deployed an interactive time-series forecasting web application that predicts cryptocurrency prices using historical market data. The system enables users to dynamically select assets and adjust forecasting parameters, providing real-time visualization of actual versus predicted trends.",
+    tags: ["Python", "Streamlit", "Scikit-learn", "Pandas", "yFinance"],
+    imageUrl:
+      "https://www.image2url.com/r2/default/images/1776675595480-72607b43-ace2-430a-a241-9b59a2d3095d.png",
+    liveLink: "https://cryptoforecast-app.streamlit.app/",
+    repoLink: "https://github.com/Kavinipremarathna/CryptoForecast-App.git",
+    featured: true,
+    createdAt: "2026-04-20T09:02:18.110Z",
+  },
+  {
+    _id: "e2efc48b-7392-4232-9a8e-3eeeb73e12cf",
+    title: "ScanMe – AI-Based Body Posture Analysis System",
+    description:
+      "Developed a web-based AI-powered posture analysis system that detects body alignment issues using full-body images. Integrated MediaPipe Pose and OpenCV to extract 33 skeletal landmarks and compute joint angles for identifying posture deviations.",
+    tags: ["Laravel", "PHP", "Python", "MediaPipe", "OpenCV", "Bootstrap"],
+    imageUrl:
+      "https://www.image2url.com/r2/default/images/1776674828864-029c3f20-c89e-4c80-82ed-5c36b8b967fc.png",
+    liveLink: "",
+    repoLink:
+      "https://github.com/AI-full-body-Image-analysis/AI-full-body-image-analysis",
+    featured: true,
+    createdAt: "2026-04-20T08:47:35.951Z",
+  },
+  {
+    _id: "a7e832cc-db3c-4eea-ae44-d2a427219597",
+    title: "Planova",
+    description:
+      "Planova is a modern web-based event management platform created to transform the way people organize weddings, birthdays, and engagements. The system combines event creation, theme customization, budget tracking, vendor package browsing, and secure online payments into a seamless experience.",
+    tags: [
+      "React.js",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "Stripe API",
+      "Tailwind CSS",
+      "Figma",
+      "Postman",
+      "Git/GitHub",
+    ],
+    imageUrl:
+      "https://mir-s3-cdn-cf.behance.net/projects/404/ef4fb2200784279.66686f8b5be30.jpg",
+    liveLink:
+      "https://www.linkedin.com/posts/kavini-premarathna_webdevelopment-reactjs-nodejs-activity-7369738007467233280-Ht-K?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEUuUucBgAieWhM6s-XjrZwS_dXN60YHdAc",
+    repoLink: "",
+    featured: true,
+    createdAt: "2026-03-13T16:41:08.098Z",
+  },
+];
+
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,9 +110,14 @@ const Projects = () => {
       try {
         // Adjust URL based on your env
         const res = await axios.get(`${API_URL}/api/projects`);
-        setProjects(res.data);
+        setProjects(
+          Array.isArray(res.data) && res.data.length > 0
+            ? res.data
+            : fallbackProjects,
+        );
       } catch (err) {
         console.error("Error fetching projects:", err);
+        setProjects(fallbackProjects);
       } finally {
         setLoading(false);
       }
